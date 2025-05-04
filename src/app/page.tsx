@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { RandomPlayButton } from "@/components/RandomPlayButton";
 
 // Kartaデータの型定義
 interface Karta {
@@ -34,7 +35,10 @@ export default async function HomePage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Ado Karta</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Ado Karta</h1>
+      <div className="text-center mb-8">
+        <RandomPlayButton kartaData={kartaData} />
+      </div>
       {kartaData.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {kartaData.map((karta) => (
