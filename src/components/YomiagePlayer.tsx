@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 // page.tsx から渡される Karta データの型
@@ -29,6 +29,15 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     // 次の札を読む処理
     const handleNextCard = () => {
+        // もし終了状態でボタンが押されたらリセットする
+        if (isFinished) {
+            setRemainingKarta(allKarta); // 未読リストを全データに戻す
+            setCurrentKarta(null);
+            setReadCount(0);
+            setIsFinished(false);
+            return;
+        }
+
         if (remainingKarta.length === 0) {
             setIsFinished(true);
             setCurrentKarta(null); // 最後の札が終わったらプレイヤーをクリア
@@ -84,8 +93,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             </div>
 
             {/* 操作ボタン */}
-            <Button onClick={handleNextCard} disabled={isFinished} size="lg">
-                {isFinished ? '終了' : readCount === 0 ? '読み上げ開始' : '次の札へ'}
+            <Button onClick={handleNextCard} size="lg">
+                {isFinished ? 'もう一回遊ぶ' : readCount === 0 ? '読み上げ開始' : '次の札へ'}
             </Button>
         </div>
     );

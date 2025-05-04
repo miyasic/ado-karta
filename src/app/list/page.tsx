@@ -3,7 +3,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import {
     Card,
-    CardContent,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
