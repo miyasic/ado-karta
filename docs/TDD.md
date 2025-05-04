@@ -2,7 +2,7 @@
 
 ## 🎯 概要
 
-Adoのベストアルバム特典カルタの読み札に対応するYouTube公式動画を、指定の秒数から再生するWebアプリケーション。
+Adoのベストアルバム特典カルタの**読み上げ機能を提供し**、対応するYouTube公式動画を、**画面遷移なしで**指定の秒数から再生するWebアプリケーション。**カルタ一覧表示機能 (`/list`)** も提供する。
 著作権に配慮し、動画・音声はすべてYouTube公式の埋め込みを使用。
 
 ---
@@ -19,7 +19,7 @@ Adoのベストアルバム特典カルタの読み札に対応するYouTube公�
 - Firestore（将来：動的データ管理用）
 
 ### 動画再生
-- **YouTube iframe**（`youtubeId` と `startSeconds` 指定）
+- **YouTube iframe**（`youtubeId` と `startSeconds` 指定、**srcを動的に変更**）
 
 ### ホスティング
 - **Vercel**（Next.js標準）
@@ -47,11 +47,13 @@ Adoのベストアルバム特典カルタの読み札に対応するYouTube公�
 
 / src
   / app
-    / page.tsx （カルタ一覧）
+    / page.tsx （**読み上げページ**）
+    / list/page.tsx （**カルタ一覧**）
     / karta/[slug]/page.tsx （再生ページ）
   / components
-    KartaCard.tsx
-    YoutubePlayer.tsx
+    YomiagePlayer.tsx （読み上げ機能のUI・状態管理）
+    KartaCard.tsx （一覧ページ用）
+    YoutubePlayer.tsx （読み上げ・再生ページ用）
   / data
     karta.json
 / styles
@@ -61,22 +63,28 @@ Adoのベストアルバム特典カルタの読み札に対応するYouTube公�
 
 ## 🔧 コンポーネント設計
 
+### YomiagePlayer (Client Component)
+- props: kartaData (全カルタ情報)
+- state: remainingKarta (未読札リスト), currentKarta (現在読んでいる札), readCount (読んだ枚数)
+- 機能: 「次へ」ボタン、ランダム札選択、状態更新、iframeのsrc動的設定
+
 ### KartaCard
 - props: title, slug
-- 機能: 一覧ページで札の表示
+- 機能: 一覧ページ (`/list`) で札の表示、再生ページへのリンク
 
 ### YoutubePlayer
 - props: youtubeId, startSeconds
-- 機能: YouTube動画を指定秒数から再生
+- 機能: YouTube動画を指定秒数から再生（iframeラッパー）
 
 ---
 
 ## 🚦 ルーティング
 
-| パス                  | 内容                |
-|-----------------------|---------------------|
-| `/`                   | カルタ一覧ページ    |
-| `/karta/[slug]`       | カルタ再生ページ（slug生成ルールは別途検討） |
+| パス                  | 内容                     |
+|-----------------------|--------------------------|
+| `/`                   | **読み上げページ**         |
+| `/list`               | **カルタ一覧ページ**       |
+| `/karta/[slug]`       | カルタ再生ページ（一覧から遷移） |
 
 ---
 
@@ -89,6 +97,7 @@ Adoのベストアルバム特典カルタの読み札に対応するYouTube公�
 
 ## ⚙️ エラーハンドリング方針（MVP）
 
-- **データ不備**: 不正なデータを持つカルタは一覧に表示しない、または再生ページでエラーメッセージを表示。
+- **データ不備**: 不正なデータを持つカルタは読み上げ/一覧から除外、または再生ページでエラーメッセージを表示。
 - **ページが見つからない場合 (404)**: Next.js 標準の404ページを表示。
 - **YouTube Player エラー**: YouTube iframe が表示するデフォルトのエラーに依存。
+- **読み上げ終了**: 全ての札を読み上げ終わったら、その旨を表示する。
