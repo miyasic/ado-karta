@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 
 // page.tsx から渡される Karta データの型
 interface Karta {
-    id: string;
     title: string;
     youtubeId: string;
     startSeconds: number;
@@ -50,7 +49,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
         // 状態を更新
         setCurrentKarta(nextKarta);
-        setRemainingKarta(remainingKarta.filter((karta) => karta.id !== nextKarta.id));
+        setRemainingKarta(remainingKarta.filter((karta) => karta.youtubeId !== nextKarta.youtubeId));
         setReadCount(readCount + 1);
         setIsFinished(false); // 念のためリセット
     };
@@ -75,7 +74,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg">
                 {currentKarta && !isFinished ? (
                     <iframe
-                        key={currentKarta.id} // key を変更することで iframe を再レンダリングさせる
+                        key={currentKarta.youtubeId}
                         width="100%"
                         height="100%"
                         src={youtubeEmbedUrl}

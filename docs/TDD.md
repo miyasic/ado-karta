@@ -33,7 +33,6 @@ Adoのベストアルバム特典カルタの読み上げ機能を提供し、�
 ```json
 [
   {
-    "id": "usseewa-1",
     "title": "うっせぇわ（A札）",
     "youtubeId": "Qp3b-RXtz4w",
     "startSeconds": 42
@@ -68,9 +67,9 @@ Adoのベストアルバム特典カルタの読み上げ機能を提供し、�
 - 機能: 「次へ」ボタン、ランダム札選択、状態更新、iframeのsrc動的設定
 
 ### KartaCard (Client Component or contains Client Component)
-- props: title, youtubeId, startSeconds, id
+- props: title, youtubeId, startSeconds, isPlaying (状態による表示切替用)
 - state (internal or passed up): isPlaying (動画表示中か)
-- 機能: 一覧ページ (`/list`) で札の表示。クリックで動画プレイヤーを**カード内（またはモーダルなど）**に表示/非表示。場合によっては `ListPage` 全体をクライアントコンポーネントにする必要あり。
+- 機能: 一覧ページ (`/list`) で札の表示。クリックで動画プレイヤーをカード内に表示/非表示 (**識別には `youtubeId` を使用**)。場合によっては `ListPage` 全体をクライアントコンポーネントにする必要あり。
 
 ### YoutubePlayer (読み上げページ用)
 - props: youtubeId, startSeconds
@@ -79,24 +78,3 @@ Adoのベストアルバム特典カルタの読み上げ機能を提供し、�
 ---
 
 ## 🚦 ルーティング
-
-| パス                  | 内容                     |
-|-----------------------|--------------------------|
-| `/`                   | 読み上げページ         |
-| `/list`               | カルタ一覧ページ       |
-
----
-
-## ⚠ 注意事項（著作権）
-
-- YouTube公式動画のみ使用
-- YouTubeポリシーに従い広告や制約を守る
-
----
-
-## ⚙️ エラーハンドリング方針（MVP）
-
-- **データ不備**: 不正なデータを持つカルタは読み上げ/一覧から除外。
-- **ページが見つからない場合 (404)**: Next.js 標準の404ページを表示 (主に `/` と `/list`)。
-- **YouTube Player エラー**: YouTube iframe が表示するデフォルトのエラーに依存。
-- **読み上げ終了**: 全ての札を読み上げ終わったら、その旨を表示する。

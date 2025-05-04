@@ -11,7 +11,7 @@ import { KartaList } from "@/components/KartaList"; // 作成したコンポー�
 
 // Kartaデータの型定義 (KartaListでも使うので、別ファイルに切り出すのも良い)
 interface Karta {
-    id: string;
+    // id: string; // 削除
     title: string;
     youtubeId: string;
     startSeconds: number;

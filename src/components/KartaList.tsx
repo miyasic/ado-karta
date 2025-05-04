@@ -10,7 +10,6 @@ import {
 
 // データ型定義
 interface Karta {
-    id: string;
     title: string;
     youtubeId: string;
     startSeconds: number;
@@ -21,26 +20,26 @@ interface KartaListProps {
 }
 
 export function KartaList({ kartaData }: KartaListProps) {
-    const [playingKartaId, setPlayingKartaId] = useState<string | null>(null);
+    const [playingYoutubeId, setPlayingYoutubeId] = useState<string | null>(null);
 
-    const handleCardClick = (id: string) => {
+    const handleCardClick = (youtubeId: string) => {
         // すでに再生中のカードをクリックしたら停止、そうでなければ再生開始
-        setPlayingKartaId(playingKartaId === id ? null : id);
+        setPlayingYoutubeId(playingYoutubeId === youtubeId ? null : youtubeId);
     };
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {kartaData.map((karta) => {
-                const isPlaying = karta.id === playingKartaId;
+                const isPlaying = karta.youtubeId === playingYoutubeId;
                 const youtubeEmbedUrl = isPlaying
                     ? `https://www.youtube.com/embed/${karta.youtubeId}?start=${karta.startSeconds}&autoplay=1`
                     : '';
 
                 return (
                     <Card
-                        key={karta.id}
+                        key={karta.youtubeId}
                         className={`hover:shadow-lg hover:border-primary cursor-pointer dark:bg-gray-800 dark:hover:bg-gray-700 transition-all duration-300 ${isPlaying ? 'border-primary scale-105' : ''}`}
-                        onClick={() => handleCardClick(karta.id)}
+                        onClick={() => handleCardClick(karta.youtubeId)}
                     >
                         <CardHeader>
                             <CardTitle className="text-lg">{karta.title}</CardTitle>
@@ -49,7 +48,7 @@ export function KartaList({ kartaData }: KartaListProps) {
                             <CardContent>
                                 <div className="aspect-video bg-black rounded-md overflow-hidden">
                                     <iframe
-                                        key={karta.id} // 再レンダリング用キー
+                                        key={karta.youtubeId}
                                         width="100%"
                                         height="100%"
                                         src={youtubeEmbedUrl}
