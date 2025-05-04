@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Ado Karta Web
 
-First, run the development server:
+**Adoカルタ読み上げ（YouTube再生）Webアプリ**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Adoのベストアルバム特典カルタを元に、読み札に対応した楽曲のYouTube公式動画を該当秒数から再生するWebアプリです。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔥 機能概要
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- カルタ札の一覧表示
+- 各札クリックで該当楽曲の公式YouTube動画を指定秒数から再生
+- レスポンシブ対応（スマホ・PC）
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗 技術スタック
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| 項目            | 技術                     |
+|-----------------|--------------------------|
+| フレームワーク  | Next.js 14（App Router） |
+| UI              | shadcn/ui + Tailwind CSS |
+| 動画再生        | YouTube iframe埋め込み    |
+| データ管理      | JSONファイル（ローカル）  |
+| ホスティング    | Vercel                    |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📁 ディレクトリ構成（予定）
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+/src
+  /app
+    /page.tsx （カルタ一覧）
+    /karta/[slug]/page.tsx （再生ページ）
+  /components
+    KartaCard.tsx
+    YoutubePlayer.tsx
+  /data
+    karta.json （札データ）
+  /public
+    /images（将来：札画像）
+/styles
+  globals.css
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📝 開発ステップ（MVP）
+
+1. Next.jsプロジェクト作成
+2. shadcn/ui導入
+3. カルタJSON作成
+4. 一覧ページ実装
+5. YouTube再生ページ実装
+6. レスポンシブ対応
+7. Vercelにデプロイ
+
+---
+
+## ⚠ 著作権・ポリシー
+
+- YouTube公式動画のみ埋め込み
+- 歌詞テキストや音声の自前提供は行わない
+- 広告スキップ・不正操作なし
+
+---
+
+## 🚀 今後の拡張候補
+
+- Firestore管理による札データの動的更新
+- PWA対応
+- 札画像表示
+- SNSシェア機能
