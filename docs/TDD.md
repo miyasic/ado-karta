@@ -2,7 +2,7 @@
 
 ## 🎯 概要
 
-Adoのベストアルバム特典カルタの**読み上げ機能を提供し**、対応するYouTube公式動画を、**画面遷移なしで**指定の秒数から再生するWebアプリケーション。**カルタ一覧表示機能 (`/list`)** も提供する。
+Adoのベストアルバム特典カルタの読み上げ機能を提供し、対応するYouTube公式動画を、画面遷移なしで指定の秒数から再生するWebアプリケーション。**カルタ一覧表示機能 (`/list`) では、カードクリックでその場に動画を埋め込み再生する。**
 著作権に配慮し、動画・音声はすべてYouTube公式の埋め込みを使用。
 
 ---
@@ -19,7 +19,7 @@ Adoのベストアルバム特典カルタの**読み上げ機能を提供し**�
 - Firestore（将来：動的データ管理用）
 
 ### 動画再生
-- **YouTube iframe**（`youtubeId` と `startSeconds` 指定、**srcを動的に変更**）
+- **YouTube iframe**（srcを動的に変更、**読み上げページと一覧ページの両方で使用**）
 
 ### ホスティング
 - **Vercel**（Next.js標準）
@@ -47,13 +47,12 @@ Adoのベストアルバム特典カルタの**読み上げ機能を提供し**�
 
 / src
   / app
-    / page.tsx （**読み上げページ**）
-    / list/page.tsx （**カルタ一覧**）
-    / karta/[slug]/page.tsx （再生ページ）
+    / page.tsx （読み上げページ）
+    / list/page.tsx （カルタ一覧）
   / components
     YomiagePlayer.tsx （読み上げ機能のUI・状態管理）
-    KartaCard.tsx （一覧ページ用）
-    YoutubePlayer.tsx （読み上げ・再生ページ用）
+    KartaCard.tsx （一覧ページ用、**クリックによる動画表示制御含む**）
+    YoutubePlayer.tsx （読み上げページで使用）
   / data
     karta.json
 / styles
@@ -68,13 +67,14 @@ Adoのベストアルバム特典カルタの**読み上げ機能を提供し**�
 - state: remainingKarta (未読札リスト), currentKarta (現在読んでいる札), readCount (読んだ枚数)
 - 機能: 「次へ」ボタン、ランダム札選択、状態更新、iframeのsrc動的設定
 
-### KartaCard
-- props: title, slug
-- 機能: 一覧ページ (`/list`) で札の表示、再生ページへのリンク
+### KartaCard (Client Component or contains Client Component)
+- props: title, youtubeId, startSeconds, id
+- state (internal or passed up): isPlaying (動画表示中か)
+- 機能: 一覧ページ (`/list`) で札の表示。クリックで動画プレイヤーを**カード内（またはモーダルなど）**に表示/非表示。場合によっては `ListPage` 全体をクライアントコンポーネントにする必要あり。
 
-### YoutubePlayer
+### YoutubePlayer (読み上げページ用)
 - props: youtubeId, startSeconds
-- 機能: YouTube動画を指定秒数から再生（iframeラッパー）
+- 機能: YouTube動画を指定秒数から再生（iframeラッパー、YomiagePlayer内で使用）
 
 ---
 
@@ -82,9 +82,8 @@ Adoのベストアルバム特典カルタの**読み上げ機能を提供し**�
 
 | パス                  | 内容                     |
 |-----------------------|--------------------------|
-| `/`                   | **読み上げページ**         |
-| `/list`               | **カルタ一覧ページ**       |
-| `/karta/[slug]`       | カルタ再生ページ（一覧から遷移） |
+| `/`                   | 読み上げページ         |
+| `/list`               | カルタ一覧ページ       |
 
 ---
 
@@ -97,7 +96,7 @@ Adoのベストアルバム特典カルタの**読み上げ機能を提供し**�
 
 ## ⚙️ エラーハンドリング方針（MVP）
 
-- **データ不備**: 不正なデータを持つカルタは読み上げ/一覧から除外、または再生ページでエラーメッセージを表示。
-- **ページが見つからない場合 (404)**: Next.js 標準の404ページを表示。
+- **データ不備**: 不正なデータを持つカルタは読み上げ/一覧から除外。
+- **ページが見つからない場合 (404)**: Next.js 標準の404ページを表示 (主に `/` と `/list`)。
 - **YouTube Player エラー**: YouTube iframe が表示するデフォルトのエラーに依存。
 - **読み上げ終了**: 全ての札を読み上げ終わったら、その旨を表示する。
