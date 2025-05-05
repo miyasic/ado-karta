@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import YouTube from 'react-youtube';
-import type { YouTubePlayer } from 'react-youtube'; // 型定義をインポート
+import type { YouTubePlayer, YouTubeProps } from 'react-youtube'; // YouTubeProps をインポート
 
 // page.tsx から渡される Karta データの型
 interface Karta {
@@ -26,6 +26,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     // 最初からプレースホルダーを表示するので初期値を true に変更…と思ったが、
     // データがない場合に備え、useEffect で設定する方が安全
     const [showPlayerPlaceholder, setShowPlayerPlaceholder] = useState<boolean>(false);
+    // 再生状態を管理する state を追加
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     const playerRef = useRef<YouTubePlayer | null>(null);
 
@@ -41,6 +43,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             setReadCount(1);
             setIsFinished(false);
             setShowPlayerPlaceholder(true); // 最初からプレースホルダーを表示
+            setIsPlaying(false); // 初期状態は再生していない
         } else {
             // データがない場合はリセット状態に
             setRemainingKarta([]);
@@ -48,6 +51,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             setReadCount(0);
             setIsFinished(true); // データがないので即終了扱い
             setShowPlayerPlaceholder(false);
+            setIsPlaying(false);
         }
     }, [initialKartaData]); // initialKartaData を依存配列に追加
     // --------------- 
@@ -67,6 +71,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const handleNextCard = () => {
         console.log("handleNextCard called");
+        setIsPlaying(false); // 次のカードに進む前に再生状態をリセット
         if (isFinished) {
             // リセット処理 (useEffect が再度実行されるように initialKartaData を使って初期化)
             if (allKarta.length > 0) {
@@ -113,6 +118,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const handlePlayClick = () => {
         if (currentKarta) {
             setShowPlayerPlaceholder(false);
+            // ここで setIsPlaying(true) ではなく、onStateChange を待つ
             loadAndPlayVideo(currentKarta);
         }
     };
@@ -120,7 +126,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const totalCount = allKarta.length;
 
     // YouTubeコンポーネントのオプション
-    const opts = {
+    const opts: YouTubeProps['opts'] = {
         height: '100%', // コンテナに合わせる
         width: '100%',  // コンテナに合わせる
         playerVars: {
@@ -138,10 +144,15 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         playerRef.current = event.target;
     };
 
-    // 再生状態が変わったときのハンドラ（デバッグ用）
-    const onStateChange = (event: { data: number }) => {
-        // -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
+    // 再生状態が変わったときのハンドラを更新
+    const onStateChange: YouTubeProps['onStateChange'] = (event) => {
         console.log("Player State Changed:", event.data);
+        // -1: unstarted, 0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued
+        if (event.data === 1) { // 再生中
+            setIsPlaying(true);
+        } else {
+            setIsPlaying(false);
+        }
     };
 
     return (
@@ -194,14 +205,14 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 )}
             </div>
 
-            {/* 操作ボタン (初期テキストを「次の札へ」に) */}
+            {/* 操作ボタン (disabled 条件を変更) */}
             <Button
                 onClick={() => {
                     console.log("Main button clicked!");
                     handleNextCard();
                 }}
                 size="lg"
-                disabled={totalCount === 0} // データがない場合は非活性
+                disabled={totalCount === 0 || (!isFinished && !isPlaying)}
             >
                 {isFinished ? 'もう一回遊ぶ' : '次の札へ'} {/* readCount === 0 の分岐を削除 */}
             </Button>
