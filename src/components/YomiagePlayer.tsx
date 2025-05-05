@@ -20,6 +20,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const [currentKarta, setCurrentKarta] = useState<Karta | null>(null); // 現在表示中の札
     const [readCount, setReadCount] = useState<number>(0); // 読んだ枚数
     const [isFinished, setIsFinished] = useState<boolean>(false); // 終了フラグ
+    // 再生プレースホルダー表示状態を追加
+    const [showPlayerPlaceholder, setShowPlayerPlaceholder] = useState<boolean>(false);
 
     // YouTube Player の URL を生成
     const youtubeEmbedUrl = currentKarta
@@ -28,30 +30,46 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     // 次の札を読む処理
     const handleNextCard = () => {
-        // もし終了状態でボタンが押されたらリセットする
         if (isFinished) {
-            setRemainingKarta(allKarta); // 未読リストを全データに戻す
+            // リセット処理
+            setRemainingKarta(allKarta);
             setCurrentKarta(null);
             setReadCount(0);
             setIsFinished(false);
+            setShowPlayerPlaceholder(false); // プレースホルダーも非表示
             return;
         }
+
+        // 最初の札読み上げ時は即座に iframe を表示するため、
+        // プレースホルダー表示フラグはまだ立てない
+        const isFirstRead = readCount === 0;
 
         if (remainingKarta.length === 0) {
             setIsFinished(true);
-            setCurrentKarta(null); // 最後の札が終わったらプレイヤーをクリア
+            setCurrentKarta(null);
+            setShowPlayerPlaceholder(false);
             return;
         }
 
-        // ランダムなインデックスを生成
         const randomIndex = Math.floor(Math.random() * remainingKarta.length);
         const nextKarta = remainingKarta[randomIndex];
 
-        // 状態を更新
         setCurrentKarta(nextKarta);
         setRemainingKarta(remainingKarta.filter((karta) => karta.youtubeId !== nextKarta.youtubeId));
         setReadCount(readCount + 1);
-        setIsFinished(false); // 念のためリセット
+        setIsFinished(false);
+        // 最初の読み上げでない場合のみ、プレースホルダーを表示する
+        if (!isFirstRead) {
+            setShowPlayerPlaceholder(true);
+        } else {
+            // 最初の読み上げの場合は、明示的にプレースホルダーを非表示にする
+            // (前の状態を引きずらないように念のため)
+            setShowPlayerPlaceholder(false);
+        }
+    };
+
+    const handlePlayClick = () => {
+        setShowPlayerPlaceholder(false); // プレースホルダーを非表示にして iframe を表示
     };
 
     const totalCount = allKarta.length;
@@ -70,9 +88,23 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 {currentKarta && !isFinished ? currentKarta.title : ''}
             </div>
 
-            {/* YouTube Player (iframe) */}
-            <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg">
-                {currentKarta && !isFinished ? (
+            {/* 動画プレイヤーエリア */}
+            <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
+                {showPlayerPlaceholder && currentKarta ? (
+                    // プレースホルダー表示 (再生ボタン)
+                    <Button
+                        variant="ghost" // 背景なしボタン
+                        size="icon" // アイコン用サイズ
+                        onClick={handlePlayClick}
+                        className="w-20 h-20 text-gray-400 hover:text-white transition-colors duration-200"
+                        aria-label="再生する"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
+                            <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+                        </svg>
+                    </Button>
+                ) : currentKarta && !isFinished ? (
+                    // iframe 表示 (最初の読み上げ時、またはプレースホルダーがクリックされた後)
                     <iframe
                         key={currentKarta.youtubeId}
                         width="100%"
@@ -85,7 +117,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         allowFullScreen
                     ></iframe>
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                    // 初期状態または終了状態のメッセージ
+                    <div className="text-gray-500">
                         {isFinished ? 'お疲れ様でした！' : '「読み上げ開始」を押してください'}
                     </div>
                 )}
