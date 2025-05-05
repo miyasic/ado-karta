@@ -31,7 +31,7 @@ export default async function YomiagePage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Ado Karta 読み上げ</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">Ado かるた</h1>
       {/* YomiagePlayer コンポーネントを配置し、カルタデータを渡す */}
       <YomiagePlayer initialKartaData={kartaData} />
     </main>

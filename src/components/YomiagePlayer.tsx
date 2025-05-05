@@ -150,8 +150,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             <div className="text-xl mb-4 font-semibold">
                 {currentIndex === -1 && totalCount > 0 ? '読み込み中...' :
                     totalCount === 0 ? 'データがありません' :
-                        isFinished && !showPlayerPlaceholder ? '読み上げ終了！' :
-                            `${readCount} / ${totalCount} 枚目`}
+                        `${readCount} / ${totalCount} 枚目`}
             </div>
 
             <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg flex items-center justify-center relative">
@@ -177,29 +176,25 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         </svg>
                     </Button>
                 )}
-                {(currentIndex === -1 || (isFinished && showPlayerPlaceholder)) && (
+                {(currentIndex === -1 || totalCount === 0) && (
                     <div className="text-gray-500 z-10">
                         {totalCount === 0 ? 'カルタデータが見つかりません' :
                             currentIndex === -1 ? '読み込み中...' :
-                                'お疲れ様でした！'}
+                                null}
                     </div>
                 )}
             </div>
 
             <div className="flex justify-center items-center space-x-4">
-                {/* 前の札へボタン (currentIndex > 0 の場合のみ表示) */}
                 {currentIndex > 0 && (
                     <Button
                         onClick={handlePreviousCard}
                         size="lg"
                         variant="secondary"
-                    // disabled 属性は不要になる
-                    // disabled={currentIndex <= 0} 
                     >
                         前の札へ
                     </Button>
                 )}
-
                 <Button
                     onClick={isFinished ? handleReset : handleNextCard}
                     size="lg"
