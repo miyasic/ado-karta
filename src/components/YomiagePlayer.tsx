@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import YouTube from 'react-youtube';
-import type { YouTubePlayer, YouTubeProps } from 'react-youtube'; // YouTubeProps をインポート
+import type { YouTubePlayer, YouTubeProps } from 'react-youtube';
 
 // page.tsx から渡される Karta データの型
 interface Karta {
@@ -16,45 +16,59 @@ interface YomiagePlayerProps {
     initialKartaData: Karta[];
 }
 
+// Fisher-Yates (Knuth) シャッフルアルゴリズム
+function shuffleArray<T>(array: T[]): T[] {
+    let currentIndex = array.length, randomIndex;
+    const newArray = [...array]; // 元の配列を変更しないようにコピー
+
+    // While there remain elements to shuffle.
+    while (currentIndex !== 0) {
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [newArray[currentIndex], newArray[randomIndex]] = [
+            newArray[randomIndex], newArray[currentIndex]];
+    }
+    return newArray;
+}
+
 export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const [allKarta] = useState<Karta[]>(initialKartaData);
-    // 初期状態を空にして useEffect で設定する
-    const [remainingKarta, setRemainingKarta] = useState<Karta[]>([]);
-    const [currentKarta, setCurrentKarta] = useState<Karta | null>(null);
-    const [readCount, setReadCount] = useState<number>(0);
-    const [isFinished, setIsFinished] = useState<boolean>(false);
-    // 最初からプレースホルダーを表示するので初期値を true に変更…と思ったが、
-    // データがない場合に備え、useEffect で設定する方が安全
+    const [shuffledPlaylist, setShuffledPlaylist] = useState<Karta[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(-1);
     const [showPlayerPlaceholder, setShowPlayerPlaceholder] = useState<boolean>(false);
-    // 再生状態を管理する state を追加
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     const playerRef = useRef<YouTubePlayer | null>(null);
 
-    // --- 初期化処理 --- 
-    useEffect(() => {
-        // マウント時または initialKartaData が変更された時に最初のカードを設定
-        if (initialKartaData.length > 0) {
-            const randomIndex = Math.floor(Math.random() * initialKartaData.length);
-            const firstKarta = initialKartaData[randomIndex];
-
-            setCurrentKarta(firstKarta);
-            setRemainingKarta(initialKartaData.filter(k => k.youtubeId !== firstKarta.youtubeId));
-            setReadCount(1);
-            setIsFinished(false);
-            setShowPlayerPlaceholder(true); // 最初からプレースホルダーを表示
-            setIsPlaying(false); // 初期状態は再生していない
+    // --- 再生リスト初期化・シャッフル関数 --- 
+    const initializePlaylist = useCallback(() => {
+        if (allKarta.length > 0) {
+            const shuffled = shuffleArray(allKarta);
+            setShuffledPlaylist(shuffled);
+            setCurrentIndex(0);
+            setShowPlayerPlaceholder(true);
+            setIsPlaying(false);
         } else {
-            // データがない場合はリセット状態に
-            setRemainingKarta([]);
-            setCurrentKarta(null);
-            setReadCount(0);
-            setIsFinished(true); // データがないので即終了扱い
+            setShuffledPlaylist([]);
+            setCurrentIndex(-1);
             setShowPlayerPlaceholder(false);
             setIsPlaying(false);
         }
-    }, [initialKartaData]); // initialKartaData を依存配列に追加
+    }, [allKarta]);
     // --------------- 
+
+    // --- マウント時に初期化 --- 
+    useEffect(() => {
+        initializePlaylist();
+    }, [initializePlaylist]);
+    // --------------- 
+
+    const currentKarta = currentIndex >= 0 && currentIndex < shuffledPlaylist.length
+        ? shuffledPlaylist[currentIndex]
+        : null;
 
     const loadAndPlayVideo = (karta: Karta) => {
         const player = playerRef.current;
@@ -71,84 +85,60 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const handleNextCard = () => {
         console.log("handleNextCard called");
-        setIsPlaying(false); // 次のカードに進む前に再生状態をリセット
-        if (isFinished) {
-            // リセット処理 (useEffect が再度実行されるように initialKartaData を使って初期化)
-            if (allKarta.length > 0) {
-                const randomIndex = Math.floor(Math.random() * allKarta.length);
-                const firstKarta = allKarta[randomIndex];
-                setCurrentKarta(firstKarta);
-                setRemainingKarta(allKarta.filter(k => k.youtubeId !== firstKarta.youtubeId));
-                setReadCount(1);
-                setIsFinished(false);
-                setShowPlayerPlaceholder(true); // プレースホルダー表示
-            } else {
-                // データがない場合はリセットしても終了状態
-                setRemainingKarta([]);
-                setCurrentKarta(null);
-                setReadCount(0);
-                setIsFinished(true);
-                setShowPlayerPlaceholder(false);
-            }
+        if (currentIndex < shuffledPlaylist.length - 1) {
+            setIsPlaying(false);
             playerRef.current?.stopVideo();
-            return;
+            setCurrentIndex(currentIndex + 1);
+            setShowPlayerPlaceholder(true);
         }
-
-        if (remainingKarta.length === 0) {
-            setIsFinished(true);
-            setCurrentKarta(null);
-            setShowPlayerPlaceholder(false);
-            playerRef.current?.stopVideo();
-            return;
-        }
-
-        const randomIndex = Math.floor(Math.random() * remainingKarta.length);
-        const nextKarta = remainingKarta[randomIndex];
-
-        setCurrentKarta(nextKarta);
-        setRemainingKarta(remainingKarta.filter((karta) => karta.youtubeId !== nextKarta.youtubeId));
-        setReadCount(readCount + 1);
-        setIsFinished(false);
-        // 常にプレースホルダーを表示する
-        setShowPlayerPlaceholder(true);
-        playerRef.current?.stopVideo(); // 前の動画を停止
     };
 
-    // プレースホルダーがクリックされたときの処理
+    const handlePreviousCard = () => {
+        console.log("handlePreviousCard called");
+        if (currentIndex > 0) {
+            setIsPlaying(false);
+            playerRef.current?.stopVideo();
+            setCurrentIndex(currentIndex - 1);
+            setShowPlayerPlaceholder(true);
+        }
+    };
+
+    const handleReset = () => {
+        console.log("handleReset called");
+        playerRef.current?.stopVideo();
+        initializePlaylist();
+    };
+
     const handlePlayClick = () => {
         if (currentKarta) {
             setShowPlayerPlaceholder(false);
-            // ここで setIsPlaying(true) ではなく、onStateChange を待つ
             loadAndPlayVideo(currentKarta);
         }
     };
 
-    const totalCount = allKarta.length;
+    const totalCount = shuffledPlaylist.length;
+    const isFinished = currentIndex >= totalCount - 1;
+    const readCount = currentIndex + 1;
 
-    // YouTubeコンポーネントのオプション
     const opts: YouTubeProps['opts'] = {
-        height: '100%', // コンテナに合わせる
-        width: '100%',  // コンテナに合わせる
+        height: '100%',
+        width: '100%',
         playerVars: {
-            // https://developers.google.com/youtube/player_parameters
-            autoplay: 0, // APIで制御するのでここでは 0
-            controls: 1, // コントロール表示
-            modestbranding: 1, // YouTubeロゴを控えめに
-            rel: 0, // 関連動画を表示しない
+            autoplay: 0,
+            controls: 1,
+            modestbranding: 1,
+            rel: 0,
         },
     };
 
-    // プレイヤーが準備できたときに呼ばれる関数
     const onReady = (event: { target: YouTubePlayer }) => {
         console.log("Player Ready");
         playerRef.current = event.target;
     };
 
-    // 再生状態が変わったときのハンドラを更新
     const onStateChange: YouTubeProps['onStateChange'] = (event) => {
         console.log("Player State Changed:", event.data);
-        // -1: unstarted, 0: ended, 1: playing, 2: paused, 3: buffering, 5: video cued
-        if (event.data === 1) { // 再生中
+        if (event.data === 1) {
             setIsPlaying(true);
         } else {
             setIsPlaying(false);
@@ -157,29 +147,23 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     return (
         <div className="w-full max-w-3xl mx-auto flex flex-col items-center">
-            {/* 状況表示 (初期状態でも枚数を表示) */}
             <div className="text-xl mb-4 font-semibold">
-                {isFinished && totalCount > 0 ? '読み上げ終了！' :
-                    isFinished && totalCount === 0 ? 'データがありません' :
-                        readCount > 0 ? `${readCount} / ${totalCount} 枚目` :
-                            '読み込み中...'} {/* 初期化中の表示 */}
+                {currentIndex === -1 && totalCount > 0 ? '読み込み中...' :
+                    totalCount === 0 ? 'データがありません' :
+                        isFinished && !showPlayerPlaceholder ? '読み上げ終了！' :
+                            `${readCount} / ${totalCount} 枚目`}
             </div>
 
-            {/* 動画プレイヤーエリア */}
             <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg flex items-center justify-center relative">
-                {/* 常にYouTubeコンポーネントをレンダリングしておく */}
                 <YouTube
-                    videoId={currentKarta?.youtubeId ?? ''} // 初期カードのIDを渡す (または空文字)
+                    videoId={currentKarta?.youtubeId ?? ''}
                     opts={opts}
                     onReady={onReady}
                     onStateChange={onStateChange}
                     onError={(e) => console.error("Player Error:", e)}
                     className="absolute top-0 left-0 w-full h-full"
-                    // 初期状態でも非表示にする条件を追加
-                    style={{ visibility: (currentKarta && !showPlayerPlaceholder && !isFinished) ? 'visible' : 'hidden' }}
+                    style={{ visibility: (currentKarta && !showPlayerPlaceholder) ? 'visible' : 'hidden' }}
                 />
-
-                {/* プレースホルダー表示 */}
                 {showPlayerPlaceholder && currentKarta && (
                     <Button
                         variant="ghost"
@@ -193,29 +177,37 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         </svg>
                     </Button>
                 )}
-
-                {/* 初期状態または終了状態のメッセージ */}
-                {/* 初期化中は currentKarta が null なのでこの条件には合致しないはず */}
-                {(!currentKarta || isFinished) && !showPlayerPlaceholder && (
+                {(currentIndex === -1 || (isFinished && showPlayerPlaceholder)) && (
                     <div className="text-gray-500 z-10">
-                        {isFinished && totalCount > 0 ? 'お疲れ様でした！' :
-                            isFinished && totalCount === 0 ? 'カルタデータが見つかりません' :
-                                '読み込み中...'}
+                        {totalCount === 0 ? 'カルタデータが見つかりません' :
+                            currentIndex === -1 ? '読み込み中...' :
+                                'お疲れ様でした！'}
                     </div>
                 )}
             </div>
 
-            {/* 操作ボタン (disabled 条件を変更) */}
-            <Button
-                onClick={() => {
-                    console.log("Main button clicked!");
-                    handleNextCard();
-                }}
-                size="lg"
-                disabled={totalCount === 0 || (!isFinished && !isPlaying)}
-            >
-                {isFinished ? 'もう一回遊ぶ' : '次の札へ'} {/* readCount === 0 の分岐を削除 */}
-            </Button>
+            <div className="flex justify-center items-center space-x-4">
+                {/* 前の札へボタン (currentIndex > 0 の場合のみ表示) */}
+                {currentIndex > 0 && (
+                    <Button
+                        onClick={handlePreviousCard}
+                        size="lg"
+                        variant="secondary"
+                    // disabled 属性は不要になる
+                    // disabled={currentIndex <= 0} 
+                    >
+                        前の札へ
+                    </Button>
+                )}
+
+                <Button
+                    onClick={isFinished ? handleReset : handleNextCard}
+                    size="lg"
+                    disabled={totalCount === 0 || (!isFinished && !isPlaying)}
+                >
+                    {isFinished ? 'もう一回遊ぶ' : '次の札へ'}
+                </Button>
+            </div>
         </div>
     );
 } 
