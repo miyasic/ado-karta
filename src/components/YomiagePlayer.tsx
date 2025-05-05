@@ -154,11 +154,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                             '読み込み中...'} {/* 初期化中の表示 */}
             </div>
 
-            {/* 現在の札タイトル */}
-            <div className="text-2xl mb-6 h-8">
-                {currentKarta && !isFinished ? currentKarta.title : ''}
-            </div>
-
             {/* 動画プレイヤーエリア */}
             <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg flex items-center justify-center relative">
                 {/* 常にYouTubeコンポーネントをレンダリングしておく */}
