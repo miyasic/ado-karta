@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ado Karta",
-  description: "AdoカルタのYouTube動画再生アプリ",
+  title: "Ado かるた",
+  description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
 };
 
 export default function RootLayout({
