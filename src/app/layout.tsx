@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ado Karta Web",
+  title: "Ado Karta",
   description: "AdoカルタのYouTube動画再生アプリ",
 };
 

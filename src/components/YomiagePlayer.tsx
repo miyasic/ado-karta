@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import YouTube from 'react-youtube';
 import type { YouTubePlayer, YouTubeProps } from 'react-youtube';
 
-// page.tsx から渡される Karta データの型
 interface Karta {
     title: string;
     youtubeId: string;
@@ -16,18 +15,14 @@ interface YomiagePlayerProps {
     initialKartaData: Karta[];
 }
 
-// Fisher-Yates (Knuth) シャッフルアルゴリズム
 function shuffleArray<T>(array: T[]): T[] {
     let currentIndex = array.length, randomIndex;
-    const newArray = [...array]; // 元の配列を変更しないようにコピー
+    const newArray = [...array];
 
-    // While there remain elements to shuffle.
     while (currentIndex !== 0) {
-        // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        // And swap it with the current element.
         [newArray[currentIndex], newArray[randomIndex]] = [
             newArray[randomIndex], newArray[currentIndex]];
     }
@@ -43,7 +38,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const playerRef = useRef<YouTubePlayer | null>(null);
 
-    // --- 再生リスト初期化・シャッフル関数 --- 
     const initializePlaylist = useCallback(() => {
         if (allKarta.length > 0) {
             const shuffled = shuffleArray(allKarta);
@@ -58,13 +52,10 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             setIsPlaying(false);
         }
     }, [allKarta]);
-    // --------------- 
 
-    // --- マウント時に初期化 --- 
     useEffect(() => {
         initializePlaylist();
     }, [initializePlaylist]);
-    // --------------- 
 
     const currentKarta = currentIndex >= 0 && currentIndex < shuffledPlaylist.length
         ? shuffledPlaylist[currentIndex]
