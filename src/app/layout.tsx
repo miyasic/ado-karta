@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,6 +30,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
+        <header className="p-4">
+          <Link href="/" className="inline-block">
+            <Image
+              src="/logo.png"
+              alt="Ado かるた ロゴ"
+              width={120}
+              height={80}
+              priority
+            />
+          </Link>
+        </header>
         {children}
         <Analytics />
       </body>
