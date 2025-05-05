@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import YouTube from 'react-youtube';
-import type { YouTubePlayer, YouTubeProps } from 'react-youtube';
+import YouTube, { type YouTubePlayer, type YouTubeProps } from 'react-youtube';
 
 interface Karta {
     title: string;
@@ -64,7 +63,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const loadAndPlayVideo = (karta: Karta) => {
         const player = playerRef.current;
         if (player && karta) {
-            console.log(`API: Loading video ${karta.youtubeId} starting at ${karta.startSeconds}`);
             player.loadVideoById({
                 videoId: karta.youtubeId,
                 startSeconds: karta.startSeconds
@@ -75,7 +73,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const handleNextCard = () => {
-        console.log("handleNextCard called");
         if (currentIndex < shuffledPlaylist.length - 1) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
@@ -85,7 +82,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const handlePreviousCard = () => {
-        console.log("handlePreviousCard called");
         if (currentIndex > 0) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
@@ -95,7 +91,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const handleReset = () => {
-        console.log("handleReset called");
         playerRef.current?.stopVideo();
         initializePlaylist();
     };
@@ -123,13 +118,12 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const onReady = (event: { target: YouTubePlayer }) => {
-        console.log("Player Ready");
         playerRef.current = event.target;
     };
 
     const onStateChange: YouTubeProps['onStateChange'] = (event) => {
-        console.log("Player State Changed:", event.data);
-        if (event.data === 1) {
+        // @ts-expect-error YT is globally available from YouTube IFrame API
+        if (event.data === YT.PlayerState.PLAYING) {
             setIsPlaying(true);
         } else {
             setIsPlaying(false);
