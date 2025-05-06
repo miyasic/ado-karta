@@ -190,9 +190,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 <Button
                     onClick={isFinished ? handleReset : handleNextCard}
                     size="lg"
-                    disabled={totalCount === 0 || (!isFinished && !isPlaying)}
+                    disabled={isLoading || totalCount === 0 || (!isFinished && !isPlaying)}
                 >
-                    {isFinished ? 'もう一回遊ぶ' : '次の札へ'}
+                    {isLoading ? '次の札へ' : (isFinished ? 'もう一回遊ぶ' : '次の札へ')}
                 </Button>
             </div>
         </div>
