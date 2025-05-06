@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ado かるた",
   description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
