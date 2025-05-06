@@ -20,6 +20,25 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',
   },
+  openGraph: {
+    title: "Ado かるた",
+    description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
+    type: "website",
+    url: "/",
+    images: [
+      {
+        url: '/ogp.png',
+        alt: 'Ado かるた ',
+      },
+    ],
+    siteName: "Ado かるた",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ado かるた",
+    description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
+    images: ['/ogp.png'],
+  },
 };
 
 export default function RootLayout({
