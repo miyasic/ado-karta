@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: '/logo.png',
+        url: '/ogp.png',
         alt: 'Ado かるた ',
       },
     ],
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ado かるた",
     description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
-    images: ['/logo.png'],
+    images: ['/ogp.png'],
   },
 };
 
