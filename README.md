@@ -14,6 +14,13 @@ Adoさんのベストアルバム「Adoのベストアドバム」のデラッ�
 
 ---
 
+## 🌐 サイトURL
+
+- **プロジェクト**: [Vercel](https://vercel.com/miyasics-projects/ado-karta)
+- **サービス**: [ado-karta.vercel.app](https://ado-karta.vercel.app/)
+
+---
+
 ## 🏗 技術スタック (概要)
 
 - **Frontend**: Next.js (App Router), TypeScript, shadcn/ui, Tailwind CSS
