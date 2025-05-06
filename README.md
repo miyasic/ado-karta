@@ -28,7 +28,7 @@ Adoさんのベストアルバム「Adoのベストアドバム」のデラッ�
 - **Hosting**: Vercel
 - **Analytics**: Vercel Analytics
 
-(詳細は `docs/TDD.md` を参照)
+(詳細は [`docs/TDD.md`](./docs/TDD.md) を参照)
 
 ---
 
