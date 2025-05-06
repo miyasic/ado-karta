@@ -40,6 +40,14 @@ export default function AboutPage() {
                     </li>
                 </ul>
             </section>
+
+            <section>
+                <h2 className="text-2xl font-semibold mt-8 mb-4">お願い</h2>
+                <p className="mb-4">
+                    最後の「やきうどん」の札だけ、YouTubeの動画がないため、その札を読み上げることができません。
+                    もしやきうどんの音源を見つけた方は、<a href="https://x.com/sic_0917" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary/80">開発者</a>までお願いします。
+                </p>
+            </section>
         </main>
     );
 } 
