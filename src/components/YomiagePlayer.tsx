@@ -34,21 +34,26 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
     const [showPlayerPlaceholder, setShowPlayerPlaceholder] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const playerRef = useRef<YouTubePlayer | null>(null);
 
     const initializePlaylist = useCallback(() => {
-        if (allKarta.length > 0) {
-            const shuffled = shuffleArray(allKarta);
-            setShuffledPlaylist(shuffled);
-            setCurrentIndex(0);
-            setShowPlayerPlaceholder(true);
-            setIsPlaying(false);
-        } else {
-            setShuffledPlaylist([]);
-            setCurrentIndex(-1);
-            setShowPlayerPlaceholder(false);
-            setIsPlaying(false);
+        try {
+            if (allKarta.length > 0) {
+                const shuffled = shuffleArray(allKarta);
+                setShuffledPlaylist(shuffled);
+                setCurrentIndex(0);
+                setShowPlayerPlaceholder(true);
+                setIsPlaying(false);
+            } else {
+                setShuffledPlaylist([]);
+                setCurrentIndex(-1);
+                setShowPlayerPlaceholder(false);
+                setIsPlaying(false);
+            }
+        } finally {
+            setIsLoading(false);
         }
     }, [allKarta]);
 
@@ -91,6 +96,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const handleReset = () => {
+        setIsLoading(true);
         playerRef.current?.stopVideo();
         initializePlaylist();
     };
@@ -133,8 +139,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     return (
         <div className="w-full max-w-3xl mx-auto flex flex-col items-center">
             <div className="text-xl mb-4 font-semibold">
-                {currentIndex === -1 && totalCount > 0 ? '読み込み中...' :
-                    totalCount === 0 ? 'データがありません' :
+                {isLoading ? 'データを読み込み中です...' :
+                    totalCount === 0 ? 'カルタデータが見つかりません' :
                         `${readCount} / ${totalCount} 枚目`}
             </div>
 
@@ -146,9 +152,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                     onStateChange={onStateChange}
                     onError={(e) => console.error("Player Error:", e)}
                     className="absolute top-0 left-0 w-full h-full"
-                    style={{ visibility: (currentKarta && !showPlayerPlaceholder) ? 'visible' : 'hidden' }}
+                    style={{ visibility: (!isLoading && currentKarta && !showPlayerPlaceholder) ? 'visible' : 'hidden' }}
                 />
-                {showPlayerPlaceholder && currentKarta && (
+                {!isLoading && showPlayerPlaceholder && currentKarta && (
                     <Button
                         variant="ghost"
                         size="icon"
@@ -161,10 +167,10 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         </svg>
                     </Button>
                 )}
-                {(currentIndex === -1 || totalCount === 0) && (
+                {(isLoading || totalCount === 0) && !currentKarta && (
                     <div className="text-gray-500 z-10">
-                        {totalCount === 0 ? 'カルタデータが見つかりません' :
-                            currentIndex === -1 ? '読み込み中...' :
+                        {isLoading ? 'データを読み込み中です...' :
+                            totalCount === 0 ? 'カルタデータが見つかりません' :
                                 null}
                     </div>
                 )}
@@ -176,6 +182,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         onClick={handlePreviousCard}
                         size="lg"
                         variant="secondary"
+                        disabled={isLoading || currentIndex <= 0}
                     >
                         前の札へ
                     </Button>
