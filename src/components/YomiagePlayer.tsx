@@ -70,9 +70,20 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         }
     }, [allKarta]);
 
+    const handleReset = useCallback(() => {
+        setIsLoading(true);
+        playerRef.current?.stopVideo();
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+        }
+        initializePlaylist();
+    }, [initializePlaylist]);
+
     useEffect(() => {
         setIsLoading(true);
         if (typeof window !== 'undefined') {
+            window.addEventListener('resetYomiageGame', handleReset);
+
             const savedStateString = localStorage.getItem(GAME_STATE_STORAGE_KEY);
             if (savedStateString) {
                 try {
@@ -96,7 +107,13 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             }
         }
         initializePlaylist();
-    }, [initializePlaylist, allKarta]);
+
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('resetYomiageGame', handleReset);
+            }
+        };
+    }, [initializePlaylist, allKarta, handleReset]);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && shuffledPlaylist.length > 0 && currentIndex >= 0) {
@@ -137,15 +154,6 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             setCurrentIndex(prevIndex => prevIndex - 1);
             setShowPlayerPlaceholder(true);
         }
-    };
-
-    const handleReset = () => {
-        setIsLoading(true);
-        playerRef.current?.stopVideo();
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(GAME_STATE_STORAGE_KEY);
-        }
-        initializePlaylist();
     };
 
     const handlePlayClick = () => {
@@ -223,7 +231,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 )}
             </div>
 
-            <div className="flex justify-center items-center space-x-4">
+            <div className="flex justify-center items-center space-x-4 mb-4">
                 {currentIndex > 0 && (
                     <Button
                         onClick={handlePreviousCard}
