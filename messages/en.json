@@ -34,5 +34,9 @@
         "linkAboutThisSite": "About This Site",
         "buttonResetGame": "Start Over",
         "switchToJapanese": "Japanese (日本語)"
+    },
+    "GlobalMetadata": {
+        "siteTitle": "Ado Karuta",
+        "siteDescription": "A fan-made Karuta reading app using Ado's songs. Features list display and shuffle playback."
     }
 }

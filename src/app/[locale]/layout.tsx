@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Header } from "@/components/Header";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, getTranslations } from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,45 +16,48 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Ado かるた",
-  description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
-  icons: {
-    icon: '/favicon.png',
-  },
-  openGraph: {
-    title: "Ado かるた",
-    description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
-    type: "website",
-    url: "/",
-    images: [
-      {
-        url: '/ogp.png',
-        alt: 'Ado かるた ',
-      },
-    ],
-    siteName: "Ado かるた",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Ado かるた",
-    description: "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。",
-    images: ['/ogp.png'],
-  },
-};
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'GlobalMetadata' });
+
+  const siteTitle = t('siteTitle');
+  const siteDescription = t('siteDescription');
+
+  return {
+    title: siteTitle,
+    description: siteDescription,
+    icons: {
+      icon: '/favicon.png',
+    },
+    openGraph: {
+      title: siteTitle,
+      description: siteDescription,
+      type: "website",
+      url: "/",
+      images: [
+        {
+          url: '/ogp.png',
+          alt: siteTitle,
+        },
+      ],
+      siteName: siteTitle,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteTitle,
+      description: siteDescription,
+      images: ['/ogp.png'],
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
-  params,
+  params: { locale },
 }: Readonly<{
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  const resolvedParam = await params;
-  const locale = resolvedParam.locale;
-
   const messages = await getMessages({ locale });
-
   const headerMessages = messages.Header ? { Header: messages.Header } : {};
 
   return (

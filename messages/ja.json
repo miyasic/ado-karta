@@ -34,5 +34,9 @@
         "linkAboutThisSite": "このサイトについて",
         "buttonResetGame": "最初からやり直す",
         "switchToEnglish": "English"
+    },
+    "GlobalMetadata": {
+        "siteTitle": "Ado かるた",
+        "siteDescription": "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。"
     }
 }
