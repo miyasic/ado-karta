@@ -61,6 +61,17 @@ export function Header() {
                                 このサイトについて
                             </Link>
                         </li>
+                        <li>
+                            <button
+                                className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
+                                onClick={() => {
+                                    setIsMenuOpen(false);
+                                    window.dispatchEvent(new CustomEvent('resetYomiageGame'));
+                                }}
+                            >
+                                最初からやり直す
+                            </button>
+                        </li>
                         {/* バージョン表示を追加 */}
                         <li>
                             <span className="block px-4 py-2 text-xs text-muted-foreground">
