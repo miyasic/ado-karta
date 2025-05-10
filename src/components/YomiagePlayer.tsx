@@ -122,6 +122,42 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         }
     }, [currentIndex, shuffledPlaylist]);
 
+    // localStorageの変更を他のタブと同期するためのuseEffect
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === GAME_STATE_STORAGE_KEY && event.newValue) {
+                try {
+                    const newState: GameState = JSON.parse(event.newValue);
+                    const newPlaylist = newState.shuffledPlaylistYomiageIds.map(youtubeId => {
+                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    }).filter(karta => karta !== undefined) as Karta[];
+
+                    // 現在のステートと比較し、変更がある場合のみ更新
+                    if (JSON.stringify(newPlaylist.map(k => k.youtubeId)) !== JSON.stringify(shuffledPlaylist.map(k => k.youtubeId)) || newState.currentIndex !== currentIndex) {
+                        setShuffledPlaylist(newPlaylist);
+                        setCurrentIndex(newState.currentIndex);
+                        // 他のタブで操作された可能性があるので、再生状態をリセット
+                        setIsPlaying(false);
+                        setShowPlayerPlaceholder(true);
+                        playerRef.current?.stopVideo(); // 動画も停止
+                    }
+                } catch (e) {
+                    console.error("Failed to parse an updated game state from storage:", e);
+                }
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [allKarta, currentIndex, shuffledPlaylist]); // allKarta, currentIndex, shuffledPlaylist を依存配列に追加
+
     const currentKarta = currentIndex >= 0 && currentIndex < shuffledPlaylist.length
         ? shuffledPlaylist[currentIndex]
         : null;
