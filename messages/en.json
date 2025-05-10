@@ -26,5 +26,12 @@
         "requestTitle": "Request",
         "requestText": "Only the last \"やきうどん(Yakiudon)\" card cannot be read aloud because there is no YouTube video for it. If you find the Yakiudon audio source, please contact the <linkToDeveloper>developer</linkToDeveloper>.",
         "developerLinkText": "developer"
+    },
+    "Header": {
+        "logoAlt": "Ado Karuta Logo",
+        "menuOpenAlt": "Open Menu",
+        "linkKartaList": "Karta List",
+        "linkAboutThisSite": "About This Site",
+        "buttonResetGame": "Start Over"
     }
 }

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { Header } from "@/components/Header";
 import "../globals.css";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params,
 }: Readonly<{
@@ -49,12 +51,18 @@ export default function RootLayout({
   params: { locale: string };
 }>) {
   const { locale } = params;
+  const messages = await getMessages({ locale });
+
+  const headerMessages = messages.Header ? { Header: messages.Header } : {};
+
   return (
     <html lang={locale} className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <Header />
+        <NextIntlClientProvider locale={locale} messages={headerMessages}>
+          <Header />
+        </NextIntlClientProvider>
         {children}
         <Analytics />
       </body>

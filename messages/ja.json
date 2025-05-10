@@ -26,5 +26,12 @@
         "requestTitle": "お願い",
         "requestText": "最後の「やきうどん」の札だけ、YouTubeの動画がないため、その札を読み上げることができません。もしやきうどんの音源を見つけた方は、<linkToDeveloper>開発者</linkToDeveloper>までお願いします。",
         "developerLinkText": "開発者"
+    },
+    "Header": {
+        "logoAlt": "Ado かるた ロゴ",
+        "menuOpenAlt": "メニューを開く",
+        "linkKartaList": "カルタ一覧",
+        "linkAboutThisSite": "このサイトについて",
+        "buttonResetGame": "最初からやり直す"
     }
 }

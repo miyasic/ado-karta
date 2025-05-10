@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button'; // shadcn/ui の Button を使う
 import { version } from '../../package.json'; // package.json から version をインポート
+import { useTranslations } from 'next-intl'; // 追加
 
 export function Header() {
+    const t = useTranslations('Header'); // 追加
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -20,7 +22,7 @@ export function Header() {
                 <Link href="/" className="inline-block">
                     <Image
                         src="/logo.png"
-                        alt="Ado かるた ロゴ"
+                        alt={t('logoAlt')} // 修正
                         width={120}
                         height={80}
                         priority
@@ -31,7 +33,7 @@ export function Header() {
                 <Button variant="ghost" size="icon" onClick={toggleMenu}>
                     <Image
                         src="/menu.png"
-                        alt="メニューを開く"
+                        alt={t('menuOpenAlt')} // 修正
                         width={60}
                         height={60}
                     />
@@ -48,7 +50,7 @@ export function Header() {
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                カルタ一覧
+                                {t('linkKartaList')} {/* 修正 */}
                             </Link>
                         </li>
                         {/* 「このサイトについて」を追加 */}
@@ -58,7 +60,7 @@ export function Header() {
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                このサイトについて
+                                {t('linkAboutThisSite')} {/* 修正 */}
                             </Link>
                         </li>
                         <li>
@@ -69,7 +71,7 @@ export function Header() {
                                     window.dispatchEvent(new CustomEvent('resetYomiageGame'));
                                 }}
                             >
-                                最初からやり直す
+                                {t('buttonResetGame')} {/* 修正 */}
                             </button>
                         </li>
                         {/* バージョン表示を追加 */}
