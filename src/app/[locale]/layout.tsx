@@ -16,7 +16,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+interface PageParams {
+  locale: string;
+}
+
+interface GenerateMetadataProps {
+  params: Promise<PageParams>;
+}
+
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: Promise<PageParams>;
+}
+
+export async function generateMetadata({ params }: GenerateMetadataProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale;
   const t = await getTranslations({ locale, namespace: 'GlobalMetadata' });
 
   const siteTitle = t('siteTitle');
@@ -52,11 +67,11 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 
 export default async function RootLayout({
   children,
-  params: { locale },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>) {
+  params,
+}: Readonly<RootLayoutProps>) {
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale;
+
   const messages = await getMessages({ locale });
   const headerMessages = messages.Header ? { Header: messages.Header } : {};
 

@@ -1,10 +1,17 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
-    const resolvedParam = await params;
-    const locale = resolvedParam.locale;
+interface PageParams {
+    locale: string;
+}
 
+interface AboutPageProps {
+    params: Promise<PageParams>;
+}
+
+export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale;
     const t = await getTranslations({ locale, namespace: 'AboutPage' });
     return {
         title: t('metadataTitle'),
@@ -12,10 +19,9 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export default async function AboutPage({ params }: { params: { locale: string } }) {
-    const resolvedParam = await params;
-    const locale = resolvedParam.locale;
-
+export default async function AboutPage({ params }: AboutPageProps) {
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale;
     const t = await getTranslations({ locale, namespace: 'AboutPage' });
 
     return (

@@ -10,9 +10,17 @@ interface Karta {
     startSeconds: number;
 }
 
-export default async function YomiagePage({ params }: { params: { locale: string } }) {
-    const resolvedParam = await params;
-    const locale = resolvedParam.locale;
+interface PageParams {
+    locale: string;
+}
+
+interface YomiagePageProps {
+    params: Promise<PageParams>;
+}
+
+export default async function YomiagePage({ params }: YomiagePageProps) {
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale;
 
     const allMessages = await getMessages({ locale });
     const yomiagePlayerMessages = allMessages.YomiagePlayer

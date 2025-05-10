@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button'; // shadcn/ui の Button を使う
-import { version } from '../../package.json'; // package.json から version をインポート
+import pkg from '../../package.json'; // package.json から version をインポート
 import { useTranslations, useLocale } from 'next-intl'; // useLocale を追加
 import { usePathname } from 'next/navigation'; // usePathname を追加
 
@@ -101,7 +101,7 @@ export function Header() {
                         {/* バージョン表示を追加 */}
                         <li>
                             <span className="block px-4 py-2 text-xs text-muted-foreground">
-                                Version: {version}
+                                Version: {pkg.version}
                             </span>
                         </li>
                     </ul>

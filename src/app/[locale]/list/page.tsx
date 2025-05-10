@@ -11,9 +11,17 @@ interface Karta {
     startSeconds: number;
 }
 
-export default async function ListPage({ params }: { params: { locale: string } }) {
-    const resolvedParam = await params;
-    const locale = resolvedParam.locale;
+interface PageParams {
+    locale: string;
+}
+
+interface ListPageProps {
+    params: Promise<PageParams>;
+}
+
+export default async function ListPage({ params }: ListPageProps) {
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale;
 
     const t = await getTranslations({ locale, namespace: 'ListPage' });
     const messages = await getMessages({ locale });
