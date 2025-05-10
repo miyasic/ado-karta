@@ -1,16 +1,19 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { KartaList } from "@/components/KartaList";
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getMessages } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
 
 interface Karta {
     title: string;
+    titleEn?: string;
     youtubeId: string;
     startSeconds: number;
 }
 
-export default async function ListPage({ params }: { params: { locale: string } }) {
-    const t = await getTranslations({ locale: params.locale, namespace: 'ListPage' });
+export default async function ListPage({ params: { locale } }: { params: { locale: string } }) {
+    const t = await getTranslations({ locale, namespace: 'ListPage' });
+    const messages = await getMessages({ locale });
 
     const jsonPath = path.join(process.cwd(), 'src', 'data', 'karta.json');
     let kartaData: Karta[] = [];
@@ -25,7 +28,9 @@ export default async function ListPage({ params }: { params: { locale: string } 
     return (
         <main className="container mx-auto px-4 py-8">
             {kartaData.length > 0 ? (
-                <KartaList kartaData={kartaData} />
+                <NextIntlClientProvider locale={locale} messages={messages}>
+                    <KartaList kartaData={kartaData} />
+                </NextIntlClientProvider>
             ) : (
                 <p className="text-center text-gray-500">{t('noKartaDataLoaded')}</p>
             )}

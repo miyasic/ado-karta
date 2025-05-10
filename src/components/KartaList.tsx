@@ -7,10 +7,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { useLocale } from 'next-intl';
 
 // データ型定義
 interface Karta {
     title: string;
+    titleEn?: string;
     youtubeId: string;
     startSeconds: number;
 }
@@ -20,6 +22,7 @@ interface KartaListProps {
 }
 
 export function KartaList({ kartaData }: KartaListProps) {
+    const locale = useLocale();
     const [playingYoutubeId, setPlayingYoutubeId] = useState<string | null>(null);
 
     const handleCardClick = (youtubeId: string) => {
@@ -35,6 +38,28 @@ export function KartaList({ kartaData }: KartaListProps) {
                     ? `https://www.youtube.com/embed/${karta.youtubeId}?start=${karta.startSeconds}&autoplay=1`
                     : '';
 
+                // 表示タイトルの決定
+                let displayTitle;
+                let iframeTitle;
+                if (locale === 'en') {
+                    if (karta.titleEn) {
+                        displayTitle = (
+                            <>
+                                {karta.titleEn}
+                                <br />
+                                <span className="text-sm text-muted-foreground">{karta.title}</span>
+                            </>
+                        );
+                        iframeTitle = `${karta.titleEn} (${karta.title})`;
+                    } else {
+                        displayTitle = karta.title; // 英語タイトルがない場合は日本語タイトルのみ
+                        iframeTitle = karta.title;
+                    }
+                } else {
+                    displayTitle = karta.title; // 日本語の場合は日本語タイトルのみ
+                    iframeTitle = karta.title;
+                }
+
                 return (
                     <Card
                         key={karta.youtubeId}
@@ -42,7 +67,7 @@ export function KartaList({ kartaData }: KartaListProps) {
                         onClick={() => handleCardClick(karta.youtubeId)}
                     >
                         <CardHeader>
-                            <CardTitle className="text-lg">{karta.title}</CardTitle>
+                            <CardTitle className="text-lg">{displayTitle}</CardTitle>
                         </CardHeader>
                         {isPlaying && (
                             <CardContent>
@@ -52,7 +77,7 @@ export function KartaList({ kartaData }: KartaListProps) {
                                         width="100%"
                                         height="100%"
                                         src={youtubeEmbedUrl}
-                                        title={`YouTube video player for ${karta.title}`}
+                                        title={`YouTube video player for ${iframeTitle}`}
                                         frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                         referrerPolicy="strict-origin-when-cross-origin"

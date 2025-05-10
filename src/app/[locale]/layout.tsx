@@ -50,7 +50,9 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  const { locale } = params;
+  const resolvedParam = await params;
+  const locale = resolvedParam.locale;
+
   const messages = await getMessages({ locale });
 
   const headerMessages = messages.Header ? { Header: messages.Header } : {};

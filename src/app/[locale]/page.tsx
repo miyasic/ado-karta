@@ -11,8 +11,10 @@ interface Karta {
 }
 
 export default async function YomiagePage({ params }: { params: { locale: string } }) {
+    const resolvedParam = await params;
+    const locale = resolvedParam.locale;
 
-    const allMessages = await getMessages({ locale: params.locale });
+    const allMessages = await getMessages({ locale });
     const yomiagePlayerMessages = allMessages.YomiagePlayer
         ? { YomiagePlayer: allMessages.YomiagePlayer }
         : {};
@@ -29,7 +31,7 @@ export default async function YomiagePage({ params }: { params: { locale: string
 
     return (
         <main className="container mx-auto px-4 py-8">
-            <NextIntlClientProvider locale={params.locale} messages={yomiagePlayerMessages}>
+            <NextIntlClientProvider locale={locale} messages={yomiagePlayerMessages}>
                 <YomiagePlayer initialKartaData={kartaData} />
             </NextIntlClientProvider>
         </main>
