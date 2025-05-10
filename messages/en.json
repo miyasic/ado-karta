@@ -1,0 +1,11 @@
+{
+    "YomiagePlayer": {
+        "loadingData": "Loading data...",
+        "noKartaData": "Karta data not found",
+        "playButtonAriaLabel": "Play",
+        "previousCardButton": "Previous Card",
+        "nextCardButton": "Next Card",
+        "playAgainButton": "Play Again",
+        "cardStatus": "Card {readCount} of {totalCount}"
+    }
+}

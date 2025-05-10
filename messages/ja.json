@@ -1,0 +1,11 @@
+{
+    "YomiagePlayer": {
+        "loadingData": "データを読み込み中です...",
+        "noKartaData": "カルタデータが見つかりません",
+        "playButtonAriaLabel": "再生する",
+        "previousCardButton": "前の札へ",
+        "nextCardButton": "次の札へ",
+        "playAgainButton": "もう一回遊ぶ",
+        "cardStatus": "{readCount} / {totalCount} 枚目"
+    }
+}
