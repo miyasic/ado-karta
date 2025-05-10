@@ -14,6 +14,13 @@ interface YomiagePlayerProps {
     initialKartaData: Karta[];
 }
 
+const GAME_STATE_STORAGE_KEY = 'yomiageGameState';
+
+interface GameState {
+    shuffledPlaylistYomiageIds: string[];
+    currentIndex: number;
+}
+
 function shuffleArray<T>(array: T[]): T[] {
     let currentIndex = array.length, randomIndex;
     const newArray = [...array];
@@ -46,11 +53,17 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 setCurrentIndex(0);
                 setShowPlayerPlaceholder(true);
                 setIsPlaying(false);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistYomiageIds: shuffled.map(k => k.youtubeId), currentIndex: 0 }));
+                }
             } else {
                 setShuffledPlaylist([]);
                 setCurrentIndex(-1);
                 setShowPlayerPlaceholder(false);
                 setIsPlaying(false);
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+                }
             }
         } finally {
             setIsLoading(false);
@@ -58,8 +71,39 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     }, [allKarta]);
 
     useEffect(() => {
+        setIsLoading(true);
+        if (typeof window !== 'undefined') {
+            const savedStateString = localStorage.getItem(GAME_STATE_STORAGE_KEY);
+            if (savedStateString) {
+                try {
+                    const savedState: GameState = JSON.parse(savedStateString);
+                    const restoredPlaylist = savedState.shuffledPlaylistYomiageIds.map(youtubeId => {
+                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    }).filter(karta => karta !== undefined) as Karta[];
+
+                    if (restoredPlaylist.length > 0 && savedState.currentIndex >= 0 && savedState.currentIndex < restoredPlaylist.length) {
+                        setShuffledPlaylist(restoredPlaylist);
+                        setCurrentIndex(savedState.currentIndex);
+                        setShowPlayerPlaceholder(true);
+                        setIsPlaying(false);
+                        setIsLoading(false);
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved game state:", e);
+                    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+                }
+            }
+        }
         initializePlaylist();
-    }, [initializePlaylist]);
+    }, [initializePlaylist, allKarta]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && shuffledPlaylist.length > 0 && currentIndex >= 0) {
+            const currentGameState: GameState = { shuffledPlaylistYomiageIds: shuffledPlaylist.map(k => k.youtubeId), currentIndex };
+            localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(currentGameState));
+        }
+    }, [currentIndex, shuffledPlaylist]);
 
     const currentKarta = currentIndex >= 0 && currentIndex < shuffledPlaylist.length
         ? shuffledPlaylist[currentIndex]
@@ -81,7 +125,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         if (currentIndex < shuffledPlaylist.length - 1) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
-            setCurrentIndex(currentIndex + 1);
+            setCurrentIndex(prevIndex => prevIndex + 1);
             setShowPlayerPlaceholder(true);
         }
     };
@@ -90,7 +134,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         if (currentIndex > 0) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
-            setCurrentIndex(currentIndex - 1);
+            setCurrentIndex(prevIndex => prevIndex - 1);
             setShowPlayerPlaceholder(true);
         }
     };
@@ -98,6 +142,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const handleReset = () => {
         setIsLoading(true);
         playerRef.current?.stopVideo();
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+        }
         initializePlaylist();
     };
 
