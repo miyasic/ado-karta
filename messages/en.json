@@ -7,5 +7,8 @@
         "nextCardButton": "Next Card",
         "playAgainButton": "Play Again",
         "cardStatus": "Card {readCount} of {totalCount}"
+    },
+    "ListPage": {
+        "noKartaDataLoaded": "Could not load Karta data."
     }
 }

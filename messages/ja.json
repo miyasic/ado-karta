@@ -7,5 +7,8 @@
         "nextCardButton": "次の札へ",
         "playAgainButton": "もう一回遊ぶ",
         "cardStatus": "{readCount} / {totalCount} 枚目"
+    },
+    "ListPage": {
+        "noKartaDataLoaded": "カルタデータを読み込めませんでした。"
     }
 }
