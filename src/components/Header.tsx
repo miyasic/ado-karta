@@ -5,15 +5,28 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button'; // shadcn/ui の Button を使う
 import { version } from '../../package.json'; // package.json から version をインポート
-import { useTranslations } from 'next-intl'; // 追加
+import { useTranslations, useLocale } from 'next-intl'; // useLocale を追加
+import { usePathname } from 'next/navigation'; // usePathname を追加
 
 export function Header() {
     const t = useTranslations('Header'); // 追加
+    const locale = useLocale(); // 現在のロケールを取得
+    const pathname = usePathname(); // 現在のパスを取得
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    // 言語切り替えのロジック
+    const otherLocale = locale === 'ja' ? 'en' : 'ja';
+    const linkText = locale === 'ja' ? t('switchToEnglish') : t('switchToJapanese');
+
+    // 現在のパスからロケールプレフィックスを除去したベースパスを取得
+    // 例: /ja/list -> /list, /en -> "", /ja -> ""
+    const basePathWithoutLocale = pathname.replace(new RegExp(`^/${locale}`), '') || '';
+    // 切り替え後のhrefを生成。ベースパスが空（ルート）の場合はロケールのみ、それ以外はロケール＋ベースパス
+    const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale}`;
 
     return (
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
@@ -73,6 +86,17 @@ export function Header() {
                             >
                                 {t('buttonResetGame')} {/* 修正 */}
                             </button>
+                        </li>
+                        {/* 言語切り替えボタンを追加 */}
+                        <li>
+                            <Link
+                                href={languageSwitchHref}
+                                className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
+                                onClick={() => setIsMenuOpen(false)}
+                                locale={otherLocale} // next/link に target locale を伝える
+                            >
+                                {linkText}
+                            </Link>
                         </li>
                         {/* バージョン表示を追加 */}
                         <li>

@@ -32,6 +32,7 @@
         "menuOpenAlt": "メニューを開く",
         "linkKartaList": "カルタ一覧",
         "linkAboutThisSite": "このサイトについて",
-        "buttonResetGame": "最初からやり直す"
+        "buttonResetGame": "最初からやり直す",
+        "switchToEnglish": "English"
     }
 }
