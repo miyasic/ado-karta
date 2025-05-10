@@ -1,0 +1,42 @@
+{
+    "YomiagePlayer": {
+        "loadingData": "Loading data...",
+        "noKartaData": "Karta data not found",
+        "playButtonAriaLabel": "Play",
+        "previousCardButton": "Previous Card",
+        "nextCardButton": "Next Card",
+        "playAgainButton": "Play Again",
+        "cardStatus": "Card {readCount} of {totalCount}"
+    },
+    "ListPage": {
+        "noKartaDataLoaded": "Could not load Karta data."
+    },
+    "AboutPage": {
+        "metadataTitle": "About This Site - Ado Karuta",
+        "metadataDescription": "Explains the overview, purpose, and how to play the Ado Karuta app.",
+        "siteOverviewTitle": "Site Overview",
+        "siteOverviewText1": "This site is an <strong>unofficial fan site</strong> created by a fan of Ado.",
+        "siteOverviewText2": "This was created to make it more fun to play with the \"Ado's Best Album Special Karuta\" that came as a bonus with the deluxe BOX edition (completely limited quantity) of Ado's best album \"Ado's Best Album\". Please enjoy it with your karuta cards.",
+        "howToPlayTitle": "How to Play",
+        "howToPlayHomepageTitle": "Top Page",
+        "howToPlayHomepageTextLine1": "Specified parts of YouTube videos corresponding to the karuta reading cards will be played in random order. Press the play button on the screen to start the reading, and operate with the \"Next Card\" and \"Previous Card\" buttons. You can shuffle again and start from the beginning with \"Play Again\".",
+        "howToPlayHomepageTextLine2": "* Even if you reload the page, you can continue playing from where you left off. \"Play Again\" will start from the beginning.",
+        "howToPlayListPageTitle": "List Page",
+        "howToPlayListPageText": "Titles of all karuta cards are displayed. Clicking on each card will play the corresponding YouTube video on the spot. I believe the most exciting parts of each song are used for the karuta cards, so you can enjoy this page alone.",
+        "requestTitle": "Request",
+        "requestText": "Only the last \"やきうどん(Yakiudon)\" card cannot be read aloud because there is no YouTube video for it. If you find the Yakiudon audio source, please contact the <linkToDeveloper>developer</linkToDeveloper>.",
+        "developerLinkText": "developer"
+    },
+    "Header": {
+        "logoAlt": "Ado Karuta Logo",
+        "menuOpenAlt": "Open Menu",
+        "linkKartaList": "Karta List",
+        "linkAboutThisSite": "About This Site",
+        "buttonResetGame": "Start Over",
+        "switchToJapanese": "Japanese (日本語)"
+    },
+    "GlobalMetadata": {
+        "siteTitle": "Ado Karuta",
+        "siteDescription": "A fan-made Karuta reading app using Ado's songs. Features list display and shuffle playback."
+    }
+}

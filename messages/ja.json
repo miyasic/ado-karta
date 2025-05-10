@@ -1,0 +1,42 @@
+{
+    "YomiagePlayer": {
+        "loadingData": "データを読み込み中です...",
+        "noKartaData": "カルタデータが見つかりません",
+        "playButtonAriaLabel": "再生する",
+        "previousCardButton": "前の札へ",
+        "nextCardButton": "次の札へ",
+        "playAgainButton": "もう一回遊ぶ",
+        "cardStatus": "{readCount} / {totalCount} 枚目"
+    },
+    "ListPage": {
+        "noKartaDataLoaded": "カルタデータを読み込めませんでした。"
+    },
+    "AboutPage": {
+        "metadataTitle": "このサイトについて - Ado かるた",
+        "metadataDescription": "Ado かるた アプリの概要と目的、遊び方について説明します。",
+        "siteOverviewTitle": "サイト概要",
+        "siteOverviewText1": "このサイトは、Adoさんのファンが作成した<strong>非公式のファンサイト</strong>です。",
+        "siteOverviewText2": "Adoさんのベストアルバム「Adoのベストアドバム」のデラックスBOX盤（完全数量限定）に特典として付属された「Adoのベストアドバム特製カルタ」を、より楽しく遊ぶために作成されました。お手元のかるたと合わせてお楽しみください。",
+        "howToPlayTitle": "遊び方",
+        "howToPlayHomepageTitle": "トップページ",
+        "howToPlayHomepageTextLine1": "カルタの読み札に対応するYouTube動画の指定箇所が、ランダムな順番で再生されます。画面の再生ボタンを押して読み上げを開始し、「次の札へ」「前の札へ」ボタンで操作します。「もう一回遊ぶ」で再度シャッフルして最初から始められます。",
+        "howToPlayHomepageTextLine2": "※ 途中でページをリロードしても、続きから遊ぶことができます。「もう一回遊ぶ」で最初からになります。",
+        "howToPlayListPageTitle": "一覧ページ",
+        "howToPlayListPageText": "全てのカルタのタイトルが表示されます。各カードをクリックすると、その場で対応するYouTube動画が再生されます。各楽曲の一番盛り上がるところがカルタの札に採用されていると思うので、このページだけでも楽しめます。",
+        "requestTitle": "お願い",
+        "requestText": "最後の「やきうどん」の札だけ、YouTubeの動画がないため、その札を読み上げることができません。もしやきうどんの音源を見つけた方は、<linkToDeveloper>開発者</linkToDeveloper>までお願いします。",
+        "developerLinkText": "開発者"
+    },
+    "Header": {
+        "logoAlt": "Ado かるた ロゴ",
+        "menuOpenAlt": "メニューを開く",
+        "linkKartaList": "カルタ一覧",
+        "linkAboutThisSite": "このサイトについて",
+        "buttonResetGame": "最初からやり直す",
+        "switchToEnglish": "English"
+    },
+    "GlobalMetadata": {
+        "siteTitle": "Ado かるた",
+        "siteDescription": "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。"
+    }
+}
