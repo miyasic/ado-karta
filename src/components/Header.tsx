@@ -76,6 +76,16 @@ export function Header() {
                                 {t('linkAboutThisSite')} {/* 修正 */}
                             </Link>
                         </li>
+                        {/* リリースノートへのリンクを追加 */}
+                        <li>
+                            <Link
+                                href="/release-notes"
+                                className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                {t('linkReleaseNotes')}
+                            </Link>
+                        </li>
                         <li>
                             <button
                                 className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
