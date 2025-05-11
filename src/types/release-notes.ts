@@ -5,8 +5,8 @@ export interface ChangeItem {
 
 export interface LocalizedChanges {
     newFeatures?: ChangeItem[];
-    improvements?: string[];
-    bugFixes?: string[];
+    improvements?: ChangeItem[];
+    bugFixes?: ChangeItem[];
 }
 
 export interface ReleaseNote {
