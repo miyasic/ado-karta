@@ -43,7 +43,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
             <div className="container mx-auto flex justify-between items-center">
                 {/* ロゴ */}
-                <Link href="/" locale={locale} className="inline-block"> {/* propsのlocaleを使用 */}
+                <Link href={`/${locale}/`} className="inline-block"> {/* propsのlocaleを使用し、hrefを修正 */}
                     <Image
                         src="/logo.png"
                         alt={t('logoAlt')} // 修正
@@ -70,8 +70,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                     <ul className="py-1">
                         <li>
                             <Link
-                                href="/list"
-                                locale={locale} // propsのlocaleを使用
+                                href={`/${locale}/list`} // propsのlocaleを使用し、hrefを修正
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -81,8 +80,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                         {/* 「このサイトについて」を追加 */}
                         <li>
                             <Link
-                                href="/about"
-                                locale={locale} // propsのlocaleを使用
+                                href={`/${locale}/about`} // propsのlocaleを使用し、hrefを修正
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -92,8 +90,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                         {/* リリースノートへのリンクを追加 */}
                         <li>
                             <Link
-                                href="/release-notes"
-                                locale={locale} // propsのlocaleを使用
+                                href={`/${locale}/release-notes`} // propsのlocaleを使用し、hrefを修正
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -117,7 +114,6 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                                 href={languageSwitchHref}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
-                                locale={otherLocale} // next/link に target locale を伝える
                             >
                                 {linkText}
                             </Link>
