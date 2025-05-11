@@ -28,9 +28,9 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
 
     // 現在のパスからロケールプレフィックスを除去したベースパスを取得
     // 例: /ja/list -> /list, /en -> "", /ja -> ""
-    const basePathWithoutLocale = pathname.replace(new RegExp(`^/${locale}`), '') || '';
+    const basePathWithoutLocale = pathname.replace(new RegExp(`^/(ja|en)`), '') || ''; // jaも除去対象に含める
     // 切り替え後のhrefを生成。ベースパスが空（ルート）の場合はロケールのみ、それ以外はロケール＋ベースパス
-    const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale}`;
+    const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale === '/' ? '' : basePathWithoutLocale}`; // ベースパスがルートなら重複スラッシュを避ける
 
     console.log("Language switch params:", {
         pathname,
@@ -43,7 +43,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
             <div className="container mx-auto flex justify-between items-center">
                 {/* ロゴ */}
-                <Link href={`/${locale}/`} className="inline-block"> {/* propsのlocaleを使用し、hrefを修正 */}
+                <Link href={locale === 'ja' ? '/' : '/en/'} className="inline-block">
                     <Image
                         src="/logo.png"
                         alt={t('logoAlt')} // 修正
@@ -70,7 +70,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                     <ul className="py-1">
                         <li>
                             <Link
-                                href={`/${locale}/list`} // propsのlocaleを使用し、hrefを修正
+                                href={locale === 'ja' ? '/list' : '/en/list'}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -80,7 +80,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                         {/* 「このサイトについて」を追加 */}
                         <li>
                             <Link
-                                href={`/${locale}/about`} // propsのlocaleを使用し、hrefを修正
+                                href={locale === 'ja' ? '/about' : '/en/about'}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -90,7 +90,7 @@ export function Header({ locale }: HeaderProps) { // localeをpropsから受け�
                         {/* リリースノートへのリンクを追加 */}
                         <li>
                             <Link
-                                href={`/${locale}/release-notes`} // propsのlocaleを使用し、hrefを修正
+                                href={locale === 'ja' ? '/release-notes' : '/en/release-notes'}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
