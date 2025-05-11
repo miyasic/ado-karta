@@ -1,5 +1,29 @@
 [
     {
+        "version": "1.1.1",
+        "releaseDate": "2025/05/11",
+        "changes": {
+            "ja": {
+                "newFeatures": [],
+                "bugFixes": [
+                    {
+                        "title": "表示言語に関する不具合を修正しました。"
+                    }
+                ],
+                "improvements": []
+            },
+            "en": {
+                "newFeatures": [],
+                "bugFixes": [
+                    {
+                        "title": "Fixed a bug related to display language."
+                    }
+                ],
+                "improvements": []
+            }
+        }
+    },
+    {
         "version": "1.1.0",
         "releaseDate": "2025/05/11",
         "changes": {
@@ -27,7 +51,7 @@
                     }
                 ],
                 "bugFixes": [],
-                "otherChanges": []
+                "improvements": []
             },
             "en": {
                 "newFeatures": [
@@ -53,7 +77,7 @@
                     }
                 ],
                 "bugFixes": [],
-                "otherChanges": []
+                "improvements": []
             }
         }
     },

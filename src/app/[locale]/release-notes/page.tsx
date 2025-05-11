@@ -85,9 +85,18 @@ export default function ReleaseNotesPage() {
                                         {currentChanges.improvements && currentChanges.improvements.length > 0 && (
                                             <div className="mb-4">
                                                 <h3 className="font-semibold text-lg mb-2 text-blue-500 dark:text-blue-400">{t('improvementsTitle')}</h3>
-                                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                                <ul className="list-none pl-0 space-y-3">
                                                     {currentChanges.improvements.map((improvement, i) => (
-                                                        <li key={`imp-${i}`}>{improvement}</li>
+                                                        <li key={`imp-${i}`} className="border-l-4 border-blue-500 pl-3">
+                                                            <p className="font-medium">{improvement.title}</p>
+                                                            {improvement.descriptions && improvement.descriptions.length > 0 && (
+                                                                <ul className="list-disc pl-5 mt-1 space-y-1 text-sm text-muted-foreground">
+                                                                    {improvement.descriptions.map((desc, j) => (
+                                                                        <li key={`imp-desc-${i}-${j}`}>{desc}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            )}
+                                                        </li>
                                                     ))}
                                                 </ul>
                                             </div>
@@ -95,9 +104,18 @@ export default function ReleaseNotesPage() {
                                         {currentChanges.bugFixes && currentChanges.bugFixes.length > 0 && (
                                             <div className="mb-4">
                                                 <h3 className="font-semibold text-lg mb-2 text-red-500 dark:text-red-400">{t('bugFixesTitle')}</h3>
-                                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                                <ul className="list-none pl-0 space-y-3">
                                                     {currentChanges.bugFixes.map((fix, i) => (
-                                                        <li key={`fix-${i}`}>{fix}</li>
+                                                        <li key={`fix-${i}`} className="border-l-4 border-red-500 pl-3">
+                                                            <p className="font-medium">{fix.title}</p>
+                                                            {fix.descriptions && fix.descriptions.length > 0 && (
+                                                                <ul className="list-disc pl-5 mt-1 space-y-1 text-sm text-muted-foreground">
+                                                                    {fix.descriptions.map((desc, j) => (
+                                                                        <li key={`fix-desc-${i}-${j}`}>{desc}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            )}
+                                                        </li>
                                                     ))}
                                                 </ul>
                                             </div>
