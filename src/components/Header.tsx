@@ -5,12 +5,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button'; // shadcn/ui の Button を使う
 import pkg from '../../package.json'; // package.json から version をインポート
-import { useTranslations, useLocale } from 'next-intl'; // useLocale を追加
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation'; // usePathname を追加
 
-export function Header() {
+// Propsの型定義を追加
+interface HeaderProps {
+    locale: string;
+}
+
+export function Header({ locale }: HeaderProps) { // localeをpropsから受け取る
     const t = useTranslations('Header'); // 追加
-    const locale = useLocale(); // 現在のロケールを取得
     const pathname = usePathname(); // 現在のパスを取得
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,7 +34,7 @@ export function Header() {
 
     console.log("Language switch params:", {
         pathname,
-        locale,
+        locale, // propsから受け取ったlocaleを使用
         otherLocale,
         finalLinkHref: languageSwitchHref
     });
@@ -39,7 +43,7 @@ export function Header() {
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
             <div className="container mx-auto flex justify-between items-center">
                 {/* ロゴ */}
-                <Link href="/" locale={locale} className="inline-block">
+                <Link href="/" locale={locale} className="inline-block"> {/* propsのlocaleを使用 */}
                     <Image
                         src="/logo.png"
                         alt={t('logoAlt')} // 修正
@@ -67,7 +71,7 @@ export function Header() {
                         <li>
                             <Link
                                 href="/list"
-                                locale={locale}
+                                locale={locale} // propsのlocaleを使用
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -78,7 +82,7 @@ export function Header() {
                         <li>
                             <Link
                                 href="/about"
-                                locale={locale}
+                                locale={locale} // propsのlocaleを使用
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -89,7 +93,7 @@ export function Header() {
                         <li>
                             <Link
                                 href="/release-notes"
-                                locale={locale}
+                                locale={locale} // propsのlocaleを使用
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >

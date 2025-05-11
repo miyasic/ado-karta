@@ -81,7 +81,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         <NextIntlClientProvider locale={locale} messages={headerMessages}>
-          <Header />
+          <Header locale={locale} />
         </NextIntlClientProvider>
         {children}
         <Analytics />

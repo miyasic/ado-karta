@@ -1,14 +1,23 @@
-import { useLocale, useTranslations } from 'next-intl';
 import releaseNotesData from '@/data/release-notes.json';
 import { ReleaseNotes, ReleaseNote, LocalizedChanges } from '@/types/release-notes';
 import { Card, CardContent } from "@/components/ui/card"; // shadcn/uiのCardを使用
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"; // shadcn/uiのAccordionを使用
+import { getTranslations } from 'next-intl/server';
 
 const releaseNotes: ReleaseNotes = releaseNotesData as ReleaseNotes;
 
-export default function ReleaseNotesPage() {
-    const locale = useLocale();
-    const t = useTranslations('ReleaseNotesPage');
+interface PageParams {
+    locale: string;
+}
+
+interface ReleaseNotesPageProps {
+    params: Promise<PageParams>;
+}
+
+export default async function ReleaseNotesPage({ params }: ReleaseNotesPageProps) {
+    const resolvedParams = await params;
+    const locale = resolvedParams.locale;
+    const t = await getTranslations('ReleaseNotesPage');
     console.log("現在の言語:", locale);
 
     if (!releaseNotes || releaseNotes.length === 0) {

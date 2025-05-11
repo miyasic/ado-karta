@@ -7,7 +7,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useLocale } from 'next-intl';
 
 // データ型定義
 interface Karta {
@@ -19,10 +18,10 @@ interface Karta {
 
 interface KartaListProps {
     kartaData: Karta[];
+    locale: string;
 }
 
-export function KartaList({ kartaData }: KartaListProps) {
-    const locale = useLocale();
+export function KartaList({ kartaData, locale }: KartaListProps) {
     const [playingYoutubeId, setPlayingYoutubeId] = useState<string | null>(null);
 
     const handleCardClick = (youtubeId: string) => {

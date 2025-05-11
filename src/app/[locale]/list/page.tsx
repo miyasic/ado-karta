@@ -41,7 +41,7 @@ export default async function ListPage({ params }: ListPageProps) {
         <main className="container mx-auto px-4 py-8">
             {kartaData.length > 0 ? (
                 <NextIntlClientProvider locale={locale} messages={messages}>
-                    <KartaList kartaData={kartaData} />
+                    <KartaList kartaData={kartaData} locale={locale} />
                 </NextIntlClientProvider>
             ) : (
                 <p className="text-center text-gray-500">{t('noKartaDataLoaded')}</p>
