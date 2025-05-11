@@ -1,8 +1,17 @@
 ---
-description:
-globs:
+description: ブランチを作成する際に参照
+globs: 
 alwaysApply: false
 ---
-# ブランチ戦略
+指定がない限り、ローカルのみで操作し、pushはしないこと
 
-（ここにブランチ作成に関するルールを記述します）
+## ブランチの命名規則:
+
+例: feature/<Issue番号>-<簡単な説明> (例: feature/123-user-authentication)
+例: bugfix/<Issue番号>-<簡単な説明>
+
+## ブランチを作成する際の親ブランチ:
+親ブランチは指定がない限りdevelopとします。
+
+## ブランチの粒度:
+1つのIssueに対して1ブランチ
