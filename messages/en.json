@@ -32,11 +32,21 @@
         "menuOpenAlt": "Open Menu",
         "linkKartaList": "Karta List",
         "linkAboutThisSite": "About This Site",
+        "linkReleaseNotes": "Release Notes",
         "buttonResetGame": "Start Over",
         "switchToJapanese": "Japanese (日本語)"
     },
     "GlobalMetadata": {
         "siteTitle": "Ado Karuta",
         "siteDescription": "A fan-made Karuta reading app using Ado's songs. Features list display and shuffle playback."
+    },
+    "ReleaseNotesPage": {
+        "title": "Release Notes",
+        "noNotes": "There are no release notes yet.",
+        "description": "Learn about the latest changes and new features in ado-karta.",
+        "newFeaturesTitle": "🚀 New Features",
+        "improvementsTitle": "✨ Improvements",
+        "bugFixesTitle": "🐛 Bug Fixes",
+        "noChanges": "There are no major changes in this version."
     }
 }
