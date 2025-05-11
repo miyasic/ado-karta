@@ -23,6 +23,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
     const resolvedParams = await params;
     const locale = resolvedParams.locale;
     const t = await getTranslations({ locale, namespace: 'AboutPage' });
+    console.log("現在の言語:", locale);
+
 
     return (
         <main className="container mx-auto px-4 py-8 max-w-3xl">

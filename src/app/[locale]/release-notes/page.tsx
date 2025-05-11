@@ -9,6 +9,7 @@ const releaseNotes: ReleaseNotes = releaseNotesData as ReleaseNotes;
 export default function ReleaseNotesPage() {
     const locale = useLocale();
     const t = useTranslations('ReleaseNotesPage');
+    console.log("現在の言語:", locale);
 
     if (!releaseNotes || releaseNotes.length === 0) {
         return (

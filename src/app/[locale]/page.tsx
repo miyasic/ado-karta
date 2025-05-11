@@ -21,6 +21,7 @@ interface YomiagePageProps {
 export default async function YomiagePage({ params }: YomiagePageProps) {
     const resolvedParams = await params;
     const locale = resolvedParams.locale;
+    console.log("現在の言語:", locale);
 
     const allMessages = await getMessages({ locale });
     const yomiagePlayerMessages = allMessages.YomiagePlayer

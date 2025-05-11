@@ -22,6 +22,7 @@ interface ListPageProps {
 export default async function ListPage({ params }: ListPageProps) {
     const resolvedParams = await params;
     const locale = resolvedParams.locale;
+    console.log("現在の言語:", locale);
 
     const t = await getTranslations({ locale, namespace: 'ListPage' });
     const messages = await getMessages({ locale });
