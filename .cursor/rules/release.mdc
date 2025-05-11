@@ -1,0 +1,27 @@
+---
+description: リリース作業時に参照すること
+globs: 
+alwaysApply: false
+---
+作業手順
+
+1. 現在のdevelopブランチを最新に更新する。
+2. GitHubMCPを利用して、前回のリリース以降にdevelopブランチにマージされたPR一覧を取得する。
+前回のリリースとは一番最近developブランチをmainブランチにマージしたものとする。タイトルは Release Version <x.y.z>となっているはずである。
+
+取得したPR一覧からユーザに報告する必要があるものを確認しリリースノートを決定する。
+ユーザはエンジニアではないので、誰が読んでもわかりやすい言葉を利用すること。また、PRへの参照などは不要。
+
+3. リリースVersionを決定する。 先ほど確認したリリース内容からSemanticVersioningに従いVersionをincrementする。
+major: 目玉機能のリリース、破壊的変更を含むアップデート
+minor: 新機能の追加、大きな不具合の解消
+patch: 軽微な不具合の解消
+
+4. リリース内容を @release-notes.json に反映する。
+5. package.jsonに新しいversionを反映
+
+6. ユーザにここまでの変更内容が正しいかを確認
+7. developブランチからリリースブランチ release/<x.y.z> を作成する。(x.y.z)には正しいVersionを入れること
+8. release/<x.y.z> をdevelopブランチにマージするPRを作成する。タイトルは <x.y.z>: Release note/Version increment とすること
+9. developブランチをmainブランチにマージするPRを作成する。
+タイトルは Release Version <x.y.z> とすること
