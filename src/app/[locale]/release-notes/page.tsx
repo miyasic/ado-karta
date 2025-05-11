@@ -66,9 +66,18 @@ export default function ReleaseNotesPage() {
                                         {currentChanges.newFeatures && currentChanges.newFeatures.length > 0 && (
                                             <div className="mb-4">
                                                 <h3 className="font-semibold text-lg mb-2 text-green-500 dark:text-green-400">{t('newFeaturesTitle')}</h3>
-                                                <ul className="list-disc pl-5 space-y-1 text-sm">
+                                                <ul className="list-none pl-0 space-y-3">
                                                     {currentChanges.newFeatures.map((feature, i) => (
-                                                        <li key={`new-${i}`}>{feature}</li>
+                                                        <li key={`new-${i}`} className="border-l-4 border-green-500 pl-3">
+                                                            <p className="font-medium">{feature.title}</p>
+                                                            {feature.descriptions && feature.descriptions.length > 0 && (
+                                                                <ul className="list-disc pl-5 mt-1 space-y-1 text-sm text-muted-foreground">
+                                                                    {feature.descriptions.map((desc, j) => (
+                                                                        <li key={`new-desc-${i}-${j}`}>{desc}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            )}
+                                                        </li>
                                                     ))}
                                                 </ul>
                                             </div>
