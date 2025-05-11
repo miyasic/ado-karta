@@ -59,7 +59,7 @@ export function Header() {
                     <ul className="py-1">
                         <li>
                             <Link
-                                href="/list"
+                                href={`/${locale}/list`}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -69,7 +69,7 @@ export function Header() {
                         {/* 「このサイトについて」を追加 */}
                         <li>
                             <Link
-                                href="/about" // 将来的に作成するページへのパス
+                                href={`/${locale}/about`} // 将来的に作成するページへのパス
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -79,7 +79,7 @@ export function Header() {
                         {/* リリースノートへのリンクを追加 */}
                         <li>
                             <Link
-                                href="/release-notes"
+                                href={`/${locale}/release-notes`}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
