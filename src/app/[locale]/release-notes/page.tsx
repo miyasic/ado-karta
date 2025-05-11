@@ -1,7 +1,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import releaseNotesData from '@/data/release-notes.json';
 import { ReleaseNotes, ReleaseNote, LocalizedChanges } from '@/types/release-notes';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // shadcn/uiのCardを使用
+import { Card, CardContent } from "@/components/ui/card"; // shadcn/uiのCardを使用
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"; // shadcn/uiのAccordionを使用
 
 const releaseNotes: ReleaseNotes = releaseNotesData as ReleaseNotes;
