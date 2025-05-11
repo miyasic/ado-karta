@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import releaseNotesData from '@/data/release-notes.json';
 import { ReleaseNotes, ReleaseNote } from '@/types/release-notes';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // shadcn/uiのCardを使用
@@ -6,11 +7,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const releaseNotes: ReleaseNotes = releaseNotesData as ReleaseNotes;
 
 export default function ReleaseNotesPage() {
+    const t = useTranslations('ReleaseNotesPage');
+
     if (!releaseNotes || releaseNotes.length === 0) {
         return (
             <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-bold mb-4">リリースノート</h1>
-                <p>リリースノートはまだありません。</p>
+                <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
+                <p>{t('noNotes')}</p>
             </div>
         );
     }
@@ -23,9 +26,9 @@ export default function ReleaseNotesPage() {
     return (
         <div className="container mx-auto p-4 max-w-3xl">
             <header className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">リリースノート</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
                 <p className="text-muted-foreground mt-1">
-                    ado-karta の最新の変更点や新機能についてお知らせします。
+                    {t('description')}
                 </p>
             </header>
 
@@ -43,7 +46,7 @@ export default function ReleaseNotesPage() {
                                 <CardContent className="pt-6">
                                     {note.changes.newFeatures && note.changes.newFeatures.length > 0 && (
                                         <div className="mb-4">
-                                            <h3 className="font-semibold text-lg mb-2 text-green-500 dark:text-green-400">🚀 新機能</h3>
+                                            <h3 className="font-semibold text-lg mb-2 text-green-500 dark:text-green-400">{t('newFeaturesTitle')}</h3>
                                             <ul className="list-disc pl-5 space-y-1 text-sm">
                                                 {note.changes.newFeatures.map((feature, i) => (
                                                     <li key={`new-${i}`}>{feature}</li>
@@ -53,7 +56,7 @@ export default function ReleaseNotesPage() {
                                     )}
                                     {note.changes.improvements && note.changes.improvements.length > 0 && (
                                         <div className="mb-4">
-                                            <h3 className="font-semibold text-lg mb-2 text-blue-500 dark:text-blue-400">✨ 改善点</h3>
+                                            <h3 className="font-semibold text-lg mb-2 text-blue-500 dark:text-blue-400">{t('improvementsTitle')}</h3>
                                             <ul className="list-disc pl-5 space-y-1 text-sm">
                                                 {note.changes.improvements.map((improvement, i) => (
                                                     <li key={`imp-${i}`}>{improvement}</li>
@@ -63,7 +66,7 @@ export default function ReleaseNotesPage() {
                                     )}
                                     {note.changes.bugFixes && note.changes.bugFixes.length > 0 && (
                                         <div className="mb-4"> {/* bugFixesセクションにもmb-4を追加 */}
-                                            <h3 className="font-semibold text-lg mb-2 text-red-500 dark:text-red-400">🐛 バグ修正</h3>
+                                            <h3 className="font-semibold text-lg mb-2 text-red-500 dark:text-red-400">{t('bugFixesTitle')}</h3>
                                             <ul className="list-disc pl-5 space-y-1 text-sm">
                                                 {note.changes.bugFixes.map((fix, i) => (
                                                     <li key={`fix-${i}`}>{fix}</li>
@@ -74,7 +77,7 @@ export default function ReleaseNotesPage() {
                                     {(!note.changes.newFeatures || note.changes.newFeatures.length === 0) &&
                                         (!note.changes.improvements || note.changes.improvements.length === 0) &&
                                         (!note.changes.bugFixes || note.changes.bugFixes.length === 0) && (
-                                            <p className="text-muted-foreground text-sm">このバージョンでの主な変更点はありません。</p>
+                                            <p className="text-muted-foreground text-sm">{t('noChanges')}</p>
                                         )}
                                 </CardContent>
                             </Card>

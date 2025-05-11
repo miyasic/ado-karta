@@ -39,5 +39,14 @@
     "GlobalMetadata": {
         "siteTitle": "Ado かるた",
         "siteDescription": "Adoの楽曲を使ったファンメイドのかるた読み上げアプリです。一覧表示やシャッフル再生機能があります。"
+    },
+    "ReleaseNotesPage": {
+        "title": "リリースノート",
+        "noNotes": "リリースノートはまだありません。",
+        "description": "ado-karta の最新の変更点や新機能についてお知らせします。",
+        "newFeaturesTitle": "🚀 新機能",
+        "improvementsTitle": "✨ 改善点",
+        "bugFixesTitle": "🐛 バグ修正",
+        "noChanges": "このバージョンでの主な変更点はありません。"
     }
 }
