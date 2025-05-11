@@ -28,6 +28,9 @@ export function Header() {
     // 切り替え後のhrefを生成。ベースパスが空（ルート）の場合はロケールのみ、それ以外はロケール＋ベースパス
     const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale}`;
 
+    // 再生画面（ルートパス）かどうかを判定
+    const isYomiagePage = pathname === `/${locale}` || pathname === '/';
+
     return (
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
             <div className="container mx-auto flex justify-between items-center">
@@ -86,17 +89,19 @@ export function Header() {
                                 {t('linkReleaseNotes')}
                             </Link>
                         </li>
-                        <li>
-                            <button
-                                className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
-                                onClick={() => {
-                                    setIsMenuOpen(false);
-                                    window.dispatchEvent(new CustomEvent('resetYomiageGame'));
-                                }}
-                            >
-                                {t('buttonResetGame')} {/* 修正 */}
-                            </button>
-                        </li>
+                        {isYomiagePage && ( // 再生画面でのみ表示
+                            <li>
+                                <button
+                                    className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
+                                    onClick={() => {
+                                        setIsMenuOpen(false);
+                                        window.dispatchEvent(new CustomEvent('resetYomiageGame'));
+                                    }}
+                                >
+                                    {t('buttonResetGame')} {/* 修正 */}
+                                </button>
+                            </li>
+                        )}
                         {/* 言語切り替えボタンを追加 */}
                         <li>
                             <Link
