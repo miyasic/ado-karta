@@ -28,6 +28,13 @@ export function Header() {
     // 切り替え後のhrefを生成。ベースパスが空（ルート）の場合はロケールのみ、それ以外はロケール＋ベースパス
     const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale}`;
 
+    console.log("Language switch params:", {
+        pathname,
+        locale,
+        otherLocale,
+        finalLinkHref: languageSwitchHref
+    });
+
     return (
         <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
             <div className="container mx-auto flex justify-between items-center">
