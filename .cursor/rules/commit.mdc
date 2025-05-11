@@ -1,4 +1,12 @@
-## コミットメッセージのprefix
+---
+description: 変更内容をCommitする際に参照
+globs: 
+alwaysApply: false
+---
+Commitする前にブランチが正しいかを確認してください。
+mainブランチ、developブランチに対する直接のコミットは禁止です。
+
+また、commitを依頼した際にはローカルだけで行い,pushは禁止です。
 
 コミットメッセージを作成する際は、以下のprefixのいずれかをメッセージの先頭に付与してください。
 
