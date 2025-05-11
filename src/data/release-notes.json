@@ -5,12 +5,22 @@
         "changes": {
             "ja": {
                 "newFeatures": [
-                    "「Adoかるた」サイトへようこそ！このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
+                    {
+                        "title": "「Adoかるた」サイトへようこそ！",
+                        "descriptions": [
+                            "このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
+                        ]
+                    }
                 ]
             },
             "en": {
                 "newFeatures": [
-                    "Welcome to the \"Ado Karuta\" site! Here you can enjoy having Ado's song karuta read aloud and viewing a list of the karuta cards."
+                    {
+                        "title": "Welcome to the \"Ado Karuta\" site!",
+                        "descriptions": [
+                            "Here you can enjoy having Ado's song karuta read aloud and viewing a list of the karuta cards."
+                        ]
+                    }
                 ]
             }
         }

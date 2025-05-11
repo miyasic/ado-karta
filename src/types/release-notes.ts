@@ -1,5 +1,10 @@
+export interface ChangeItem {
+    title: string;
+    descriptions?: string[];
+}
+
 export interface LocalizedChanges {
-    newFeatures?: string[];
+    newFeatures?: ChangeItem[];
     improvements?: string[];
     bugFixes?: string[];
 }
