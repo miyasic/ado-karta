@@ -1,0 +1,10 @@
+---
+description: GitHubの操作をする際に参照すること
+globs: 
+alwaysApply: false
+---
+GitHubの操作をする際に参照すること
+
+GitHubの操作をする場合はGitHubMCPを利用すること
+特に指定がない場合 miyasic/ado-karta のレポジトリを利用すること
+

@@ -1,0 +1,13 @@
+---
+description: GitHubのissueを作成する際にはこちらを参照してください。
+globs: 
+alwaysApply: false
+---
+GitHubのissueを作成する際にはこちらを参照してください。
+
+issueのタイトルを与えたられた場合
+タイトルと [README.md](mdc:README.md) [TDD.md](mdc:docs/TDD.md) [PRD.md](mdc:docs/PRD.md)を参考にissueの対応内容を検討し、提案してください。
+
+提案後、ユーザが内容のチェックをして問題がなければ GitHubのmcpを利用してissueを作成してください。
+
+GitHubの操作をする際には [github-mcp.mdc](mdc:.cursor/rules/github-mcp.mdc) を参考にしてください。

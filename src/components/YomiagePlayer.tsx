@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import YouTube, { type YouTubePlayer, type YouTubeProps } from 'react-youtube';
+import { useTranslations } from 'next-intl';
 
 interface Karta {
     title: string;
@@ -12,6 +13,13 @@ interface Karta {
 
 interface YomiagePlayerProps {
     initialKartaData: Karta[];
+}
+
+const GAME_STATE_STORAGE_KEY = 'yomiageGameState';
+
+interface GameState {
+    shuffledPlaylistYomiageIds: string[];
+    currentIndex: number;
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -29,6 +37,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
+    const t = useTranslations('YomiagePlayer');
     const [allKarta] = useState<Karta[]>(initialKartaData);
     const [shuffledPlaylist, setShuffledPlaylist] = useState<Karta[]>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
@@ -46,20 +55,110 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 setCurrentIndex(0);
                 setShowPlayerPlaceholder(true);
                 setIsPlaying(false);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistYomiageIds: shuffled.map(k => k.youtubeId), currentIndex: 0 }));
+                }
             } else {
                 setShuffledPlaylist([]);
                 setCurrentIndex(-1);
                 setShowPlayerPlaceholder(false);
                 setIsPlaying(false);
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+                }
             }
         } finally {
             setIsLoading(false);
         }
     }, [allKarta]);
 
-    useEffect(() => {
+    const handleReset = useCallback(() => {
+        setIsLoading(true);
+        playerRef.current?.stopVideo();
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+        }
         initializePlaylist();
     }, [initializePlaylist]);
+
+    useEffect(() => {
+        setIsLoading(true);
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resetYomiageGame', handleReset);
+
+            const savedStateString = localStorage.getItem(GAME_STATE_STORAGE_KEY);
+            if (savedStateString) {
+                try {
+                    const savedState: GameState = JSON.parse(savedStateString);
+                    const restoredPlaylist = savedState.shuffledPlaylistYomiageIds.map(youtubeId => {
+                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    }).filter(karta => karta !== undefined) as Karta[];
+
+                    if (restoredPlaylist.length > 0 && savedState.currentIndex >= 0 && savedState.currentIndex < restoredPlaylist.length) {
+                        setShuffledPlaylist(restoredPlaylist);
+                        setCurrentIndex(savedState.currentIndex);
+                        setShowPlayerPlaceholder(true);
+                        setIsPlaying(false);
+                        setIsLoading(false);
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved game state:", e);
+                    localStorage.removeItem(GAME_STATE_STORAGE_KEY);
+                }
+            }
+        }
+        initializePlaylist();
+
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('resetYomiageGame', handleReset);
+            }
+        };
+    }, [initializePlaylist, allKarta, handleReset]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && shuffledPlaylist.length > 0 && currentIndex >= 0) {
+            const currentGameState: GameState = { shuffledPlaylistYomiageIds: shuffledPlaylist.map(k => k.youtubeId), currentIndex };
+            localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(currentGameState));
+        }
+    }, [currentIndex, shuffledPlaylist]);
+
+    // localStorageの変更を他のタブと同期するためのuseEffect
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === GAME_STATE_STORAGE_KEY && event.newValue) {
+                try {
+                    const newState: GameState = JSON.parse(event.newValue);
+                    const newPlaylist = newState.shuffledPlaylistYomiageIds.map(youtubeId => {
+                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    }).filter(karta => karta !== undefined) as Karta[];
+
+                    // 現在のステートと比較し、変更がある場合のみ更新
+                    if (JSON.stringify(newPlaylist.map(k => k.youtubeId)) !== JSON.stringify(shuffledPlaylist.map(k => k.youtubeId)) || newState.currentIndex !== currentIndex) {
+                        setShuffledPlaylist(newPlaylist);
+                        setCurrentIndex(newState.currentIndex);
+                        // 他のタブで操作された可能性があるので、再生状態をリセット
+                        setIsPlaying(false);
+                        setShowPlayerPlaceholder(true);
+                        playerRef.current?.stopVideo(); // 動画も停止
+                    }
+                } catch (e) {
+                    console.error("Failed to parse an updated game state from storage:", e);
+                }
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [allKarta, currentIndex, shuffledPlaylist]); // allKarta, currentIndex, shuffledPlaylist を依存配列に追加
 
     const currentKarta = currentIndex >= 0 && currentIndex < shuffledPlaylist.length
         ? shuffledPlaylist[currentIndex]
@@ -81,7 +180,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         if (currentIndex < shuffledPlaylist.length - 1) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
-            setCurrentIndex(currentIndex + 1);
+            setCurrentIndex(prevIndex => prevIndex + 1);
             setShowPlayerPlaceholder(true);
         }
     };
@@ -90,15 +189,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         if (currentIndex > 0) {
             setIsPlaying(false);
             playerRef.current?.stopVideo();
-            setCurrentIndex(currentIndex - 1);
+            setCurrentIndex(prevIndex => prevIndex - 1);
             setShowPlayerPlaceholder(true);
         }
-    };
-
-    const handleReset = () => {
-        setIsLoading(true);
-        playerRef.current?.stopVideo();
-        initializePlaylist();
     };
 
     const handlePlayClick = () => {
@@ -139,9 +232,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     return (
         <div className="w-full max-w-3xl mx-auto flex flex-col items-center">
             <div className="text-xl mb-4 font-semibold">
-                {isLoading ? 'データを読み込み中です...' :
-                    totalCount === 0 ? 'カルタデータが見つかりません' :
-                        `${readCount} / ${totalCount} 枚目`}
+                {isLoading ? t('loadingData') :
+                    totalCount === 0 ? t('noKartaData') :
+                        t('cardStatus', { readCount, totalCount })}
             </div>
 
             <div className="w-full aspect-video mb-6 bg-black rounded-lg overflow-hidden shadow-lg flex items-center justify-center relative">
@@ -160,7 +253,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         size="icon"
                         onClick={handlePlayClick}
                         className="w-20 h-20 text-gray-400 hover:text-white transition-colors duration-200 z-10"
-                        aria-label="再生する"
+                        aria-label={t('playButtonAriaLabel')}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
                             <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
@@ -169,14 +262,14 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                 )}
                 {(isLoading || totalCount === 0) && !currentKarta && (
                     <div className="text-gray-500 z-10">
-                        {isLoading ? 'データを読み込み中です...' :
-                            totalCount === 0 ? 'カルタデータが見つかりません' :
+                        {isLoading ? t('loadingData') :
+                            totalCount === 0 ? t('noKartaData') :
                                 null}
                     </div>
                 )}
             </div>
 
-            <div className="flex justify-center items-center space-x-4">
+            <div className="flex justify-center items-center space-x-4 mb-4">
                 {currentIndex > 0 && (
                     <Button
                         onClick={handlePreviousCard}
@@ -184,7 +277,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         variant="secondary"
                         disabled={isLoading || currentIndex <= 0}
                     >
-                        前の札へ
+                        {t('previousCardButton')}
                     </Button>
                 )}
                 <Button
@@ -192,7 +285,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                     size="lg"
                     disabled={isLoading || totalCount === 0 || !isPlaying}
                 >
-                    {isLoading ? '次の札へ' : (isFinished ? 'もう一回遊ぶ' : '次の札へ')}
+                    {isLoading ? t('nextCardButton') : (isFinished ? t('playAgainButton') : t('nextCardButton'))}
                 </Button>
             </div>
         </div>
