@@ -3,9 +3,16 @@
         "version": "1.0.0",
         "releaseDate": "2025-05-06",
         "changes": {
-            "newFeatures": [
-                "「Adoかるた」サイトへようこそ！このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
-            ]
+            "ja": {
+                "newFeatures": [
+                    "「Adoかるた」サイトへようこそ！このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
+                ]
+            },
+            "en": {
+                "newFeatures": [
+                    "Welcome to the \"Ado Karuta\" site! Here you can enjoy having Ado's song karuta read aloud and viewing a list of the karuta cards."
+                ]
+            }
         }
     }
 ]
