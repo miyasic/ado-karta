@@ -1,0 +1,28 @@
+name: Check Release Notes Change
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
+
+jobs:
+  check_release_notes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch depth 0 is required to compare branches correctly
+          fetch-depth: 0
+
+      - name: Check if release-notes.json was modified
+        run: |
+          # Compare the head branch with the base branch (main)
+          git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep -q "src/data/release-notes.json"
+          if [ $? -ne 0 ]; then
+            echo "Error: src/data/release-notes.json must be modified in pull requests to main."
+            exit 1
+          else
+            echo "src/data/release-notes.json has been modified."
+          fi
