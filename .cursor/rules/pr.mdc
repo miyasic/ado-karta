@@ -1,13 +1,26 @@
 ---
-description: 
+description: PullRequest (PR)作成時に参照すること
 globs: 
 alwaysApply: false
 ---
-# Pull Request 作成時のルール
-
 ## 必須事項
 
 - buildの確認: `npm run build` を実行してエラーが発生しないことを確認してください。
 
 - **リモートブランチの存在確認**: プルリクエストを作成する前に、対象のローカルブランチがリモートリポジトリにプッシュされていることを必ず確認してください。ローカルのみに存在するブランチからプルリクエストを作成することはできません。
   - コマンド例: `git push origin <branch-name>`
+
+- PRのタイトルについて
+prefixを利用してください。
+- `feat`: 新機能の追加
+- `bugfix`: 不具合の修正
+- `improvements`: 機能改善
+- `docs`: ドキュメントのみの変更
+- `revert`: 以前のコミットに戻す場合
+- `refactor`: リファクタリング（バグ修正や機能追加ではないコード変更）
+- `chore`: ビルドプロセスや補助ツール、ライブラリの変更（コードの動作に影響しないもの）
+
+feat,bugfix,improvements：ユーザ向けのリリースノートに掲載
+docs,revert,refactor,chore：ユーザ向けのリリースノートに非掲載
+
+PRのタイトル、内容は特に指示がない限り、日本語で書いてください。
