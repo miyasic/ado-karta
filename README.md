@@ -25,6 +25,7 @@ Adoさんのベストアルバム「Adoのベストアドバム」のデラッ�
 
 - **Frontend**: Next.js (App Router), TypeScript, shadcn/ui, Tailwind CSS
 - **Video**: react-youtube
+- **Internationalization**: next-intl
 - **Hosting**: Vercel
 - **Analytics**: Vercel Analytics
 
@@ -42,7 +43,7 @@ Adoさんのベストアルバム「Adoのベストアドバム」のデラッ�
 
 ## 🛠️ セットアップ (開発者向け)
 
-1.  リポジトリをクローン: `git clone https://github.com/[ユーザー名]/ado-karta.git`
+1.  リポジトリをクローン: `git clone https://github.com/miyasic/ado-karta.git`
 2.  依存関係をインストール: `npm install` (または `yarn install`)
 3.  開発サーバーを起動: `npm run dev` (または `yarn dev`)
 4.  ブラウザで `http://localhost:3000` を開く
