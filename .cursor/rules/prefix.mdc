@@ -30,8 +30,9 @@ Conventional Commits の形式を推奨します。
 
 ### PRタイトル
 コミットメッセージと同様に、PRの内容を表すprefixを付与します。
+対応するIssueがある場合Issue番号を含めること。
 例:
-- `feat: ユーザー認証機能の実装`
+- `feat: <Issue番号> - ユーザー認証機能の実装`
 
 ### リリースノートへの影響
 PRのタイトルに付与されたprefixによって、リリースノートへの掲載有無が判断されます。
@@ -51,14 +52,14 @@ PRのタイトルに付与されたprefixによって、リリースノートへ
 
 ## Prefix利用対応表
 
-| Prefix         | ブランチ名                                  | コミットメッセージ        | PRタイトル            | リリースノート |
-|----------------|-------------------------------------------|-------------------------|-----------------------|--------------|
-| `feat`         | `feature/<Issue>-<desc>`                  | `feat: <description>`   | `feat: <description>` | 掲載         |
-| `bugfix`       | `bugfix/<Issue>-<desc>`                   | `bugfix: <description>` | `bugfix: <description>` | 掲載         |
-| `improvements` | `feature/<Issue>-<desc>` <br> or `improvements/...` | `improvements: <description>` | `improvements: <description>` | 掲載         |
-| `docs`         | `docs/<Issue>-<desc>` <br> or `feature/...` | `docs: <description>`   | `docs: <description>` | 非掲載       |
-| `revert`       | `revert/<Issue>-<desc>`                   | `revert: <description>` | `revert: <description>` | 非掲載       |
-| `refactor`     | `refactor/<Issue>-<desc>`                 | `refactor: <description>`| `refactor: <description>`| 非掲載       |
-| `chore`        | `chore/<Issue>-<desc>`                    | `chore: <description>`  | `chore: <description>`  | 非掲載       |
+| Prefix         | ブランチ名                                  | コミットメッセージ        | PRタイトル                          | リリースノート |
+|----------------|-------------------------------------------|-------------------------|-------------------------------------|--------------|
+| `feat`         | `feature/<Issue>-<desc>`                  | `feat: <description>`   | `feat: <Issue番号> - <description>` | 掲載         |
+| `bugfix`       | `bugfix/<Issue>-<desc>`                   | `bugfix: <description>` | `bugfix: <Issue番号> - <description>` | 掲載         |
+| `improvements` | `feature/<Issue>-<desc>` <br> or `improvements/...` | `improvements: <description>` | `improvements: <Issue番号> - <description>` | 掲載         |
+| `docs`         | `docs/<Issue>-<desc>` <br> or `feature/...` | `docs: <description>`   | `docs: <Issue番号> - <description>`   | 非掲載       |
+| `revert`       | `revert/<Issue>-<desc>`                   | `revert: <description>` | `revert: <Issue番号> - <description>` | 非掲載       |
+| `refactor`     | `refactor/<Issue>-<desc>`                 | `refactor: <description>`| `refactor: <Issue番号> - <description>`| 非掲載       |
+| `chore`        | `chore/<Issue>-<desc>`                    | `chore: <description>`  | `chore: <Issue番号> - <description>`  | 非掲載       |
 
 * 表内のブランチ名は一例です。詳細な命名規則は `branch-strategy.mdc` を参照してください。
