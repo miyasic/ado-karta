@@ -1,0 +1,65 @@
+---
+description: Git,GitHubの操作時に参照すること
+globs: 
+alwaysApply: false
+---
+以下のprefixは、ブランチ名、コミットメッセージ、PRタイトルなどで利用します。
+
+- `feat`: 新機能の追加
+- `bugfix`: 不具合の修正
+- `improvements`: 機能改善
+- `docs`: ドキュメントのみの変更
+- `revert`: 以前のコミットに戻す場合
+- `refactor`: リファクタリング（バグ修正や機能追加ではないコード変更）
+- `chore`: ビルドプロセスや補助ツール、ライブラリの変更（コードの動作に影響しないもの）
+
+## 各種操作時のprefix利用について
+
+### ブランチ名
+ブランチの種類に応じてprefixを付与します。
+例:
+- `feature/<Issue番号>-<簡単な説明>` (例: `feature/123-user-authentication`)
+- `bugfix/<Issue番号>-<簡単な説明>`
+
+### コミットメッセージ
+変更内容の種類を示すprefixをメッセージの先頭に付与します。
+Conventional Commits の形式を推奨します。
+例:
+- `feat: 新しいログイン機能を追加`
+- `docs: READMEの誤字を修正`
+
+### PRタイトル
+コミットメッセージと同様に、PRの内容を表すprefixを付与します。
+対応するIssueがある場合Issue番号を含めること。
+例:
+- `feat: <Issue番号> - ユーザー認証機能の実装`
+
+### リリースノートへの影響
+PRのタイトルに付与されたprefixによって、リリースノートへの掲載有無が判断されます。
+
+- **リリースノートに掲載されるprefix:**
+  - `feat`
+  - `bugfix`
+  - `improvements`
+
+- **リリースノートに掲載されないprefix:**
+  - `docs`
+  - `revert`
+  - `refactor`
+  - `chore`
+
+詳細な運用ルールは、各操作に対応するルールファイル（`branch-strategy.mdc`, `commit.mdc`, `pr.mdc`, `release.mdc`など）も併せて参照してください。
+
+## Prefix利用対応表
+
+| Prefix         | ブランチ名                                  | コミットメッセージ        | PRタイトル                          | リリースノート |
+|----------------|-------------------------------------------|-------------------------|-------------------------------------|--------------|
+| `feat`         | `feature/<Issue>-<desc>`                  | `feat: <description>`   | `feat: <Issue番号> - <description>` | 掲載         |
+| `bugfix`       | `bugfix/<Issue>-<desc>`                   | `bugfix: <description>` | `bugfix: <Issue番号> - <description>` | 掲載         |
+| `improvements` | `feature/<Issue>-<desc>` <br> or `improvements/...` | `improvements: <description>` | `improvements: <Issue番号> - <description>` | 掲載         |
+| `docs`         | `docs/<Issue>-<desc>` <br> or `feature/...` | `docs: <description>`   | `docs: <Issue番号> - <description>`   | 非掲載       |
+| `revert`       | `revert/<Issue>-<desc>`                   | `revert: <description>` | `revert: <Issue番号> - <description>` | 非掲載       |
+| `refactor`     | `refactor/<Issue>-<desc>`                 | `refactor: <description>`| `refactor: <Issue番号> - <description>`| 非掲載       |
+| `chore`        | `chore/<Issue>-<desc>`                    | `chore: <description>`  | `chore: <Issue番号> - <description>`  | 非掲載       |
+
+* 表内のブランチ名は一例です。詳細な命名規則は `branch-strategy.mdc` を参照してください。

@@ -11,7 +11,7 @@ export interface LocalizedChanges {
 
 export interface ReleaseNote {
     version: string;
-    releaseDate: string; // YYYY-MM-DD 形式
+    releaseDate: string; // YYYY/MM/DD 形式
     changes: {
         [locale: string]: LocalizedChanges;
     };
