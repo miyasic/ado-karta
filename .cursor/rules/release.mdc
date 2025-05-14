@@ -9,8 +9,12 @@ alwaysApply: false
 2. GitHubMCPを利用して、前回のリリース以降にdevelopブランチにマージされたPR一覧を取得する。
 前回のリリースとは一番最近developブランチをmainブランチにマージしたものとする。タイトルは Release Version <x.y.z>となっているはずである。
 
-取得したPR一覧からユーザに報告する必要があるものを確認しリリースノートを決定する。
+取得したPR一覧からタイトルのprefixがfeat,bugfix,improvementsとなっているものがリリースノートの対象なので、これらのPRを元にリリースノートを作成する。release-note.jsonの形式を参照すること。
 ユーザはエンジニアではないので、誰が読んでもわかりやすい言葉を利用すること。また、PRへの参照などは不要。
+
+リリースノートに書く内容がない場合、improvements扱いとし下記のようにすること
+日本語タイトル：軽微な改善を行いました。
+英語タイトル：General improvements.
 
 3. リリースVersionを決定する。 先ほど確認したリリース内容からSemanticVersioningに従いVersionをincrementする。
 major: 目玉機能のリリース、破壊的変更を含むアップデート
@@ -25,3 +29,64 @@ patch: 軽微な不具合の解消
 8. release/<x.y.z> をdevelopブランチにマージするPRを作成する。タイトルは <x.y.z>: Release note/Version increment とすること
 9. developブランチをmainブランチにマージするPRを作成する。
 タイトルは Release Version <x.y.z> とすること
+10. 8で作ったPRをマージする。
+11. 9で作ったPRをマージする。
+12. mainブランチに <x.y.z>というリリースタグを打つ
+内容は2で取得したPRのタイトルとリンク一覧とする。
+(例:feat: Issue #4 - ゲーム進行状況の保存とタブ間同期機能 by @miyasic in #10)
+
+
+## release-note.jsonの形式
+```json
+[
+  {
+    "version": "x.y.z",
+    "releaseDate": "YYYY/MM/DD",
+    "changes": {
+      "ja": {
+        "newFeatures": [
+          { "title": "新機能1", "descriptions": ["詳細1", "詳細2"] },
+          { "title": "新機能2" }
+        ],
+        "improvements": [
+          { "title": "改善点1" }
+        ],
+        "bugFixes": [
+          { "title": "バグ修正1", "descriptions": ["修正内容詳細"] }
+        ]
+      }
+    }
+  }
+]
+```
+
+以下は、`release-note.json` の各エントリに対応するTypeScriptの型定義風の表現です。
+
+```typescript
+interface ChangeItem {
+    title: string; // 必須: 変更点のタイトル
+    descriptions?: string[]; // 任意: 変更点の詳細説明（配列）
+}
+
+interface LocalizedChanges {
+    newFeatures?: ChangeItem[]; // 任意: 新機能のリスト
+    improvements?: ChangeItem[]; // 任意: 機能改善のリスト
+    bugFixes?: ChangeItem[]; // 任意: バグ修正のリスト
+}
+
+interface ReleaseNote {
+    version: string; // 必須: リリースバージョン (例: "1.2.3")
+    releaseDate: string; // 必須: リリース日 (YYYY/MM/DD 形式)
+    changes: { // 必須: 変更内容
+        [locale: string]: LocalizedChanges; // キーはロケール文字列 ("ja" | "en")
+    };
+}
+
+// release-note.json は ReleaseNote[] 型 (ReleaseNote の配列) として構成されます。
+// 各リスト (newFeatures など) や descriptions は、該当する変更がない場合は省略するか、空の配列 [] としてください。
+```
+
+上記の `ReleaseNoteEntry` の配列として `release-note.json` は構成されます。
+`changes.ja` 内の各リスト (`newFeatures` など) は、該当する変更がない場合は省略するか、空のリスト `[]` としてください。
+
+

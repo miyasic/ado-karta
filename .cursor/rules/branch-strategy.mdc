@@ -6,6 +6,7 @@ alwaysApply: false
 指定がない限り、ローカルのみで操作し、pushはしないこと
 
 ## ブランチの命名規則:
+利用可能なprefixは [.cursor/rules/prefix.mdc](mdc:.cursor/rules/prefix.mdc) を参照してください。
 
 例: feature/<Issue番号>-<簡単な説明> (例: feature/123-user-authentication)
 例: bugfix/<Issue番号>-<簡単な説明>
