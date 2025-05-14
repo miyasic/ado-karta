@@ -1,5 +1,25 @@
 [
     {
+        "version": "1.1.2",
+        "releaseDate": "2025/05/15",
+        "changes": {
+            "ja": {
+                "improvements": [
+                    {
+                        "title": "再生画面でのみ「最初からやり直す」ボタンが表示されるようにしました。"
+                    }
+                ]
+            },
+            "en": {
+                "improvements": [
+                    {
+                        "title": "The \"Restart from the beginning\" button is now displayed only on the playback screen."
+                    }
+                ]
+            }
+        }
+    },
+    {
         "version": "1.1.1",
         "releaseDate": "2025/05/11",
         "changes": {
