@@ -12,6 +12,10 @@ alwaysApply: false
 取得したPR一覧からタイトルのprefixがfeat,bugfix,improvementsとなっているものがリリースノートの対象なので、これらのPRを元にリリースノートを作成する。release-note.jsonの形式を参照すること。
 ユーザはエンジニアではないので、誰が読んでもわかりやすい言葉を利用すること。また、PRへの参照などは不要。
 
+リリースノートに書く内容がない場合、improvements扱いとし下記のようにすること
+日本語タイトル：軽微な改善を行いました。
+英語タイトル：General improvements.
+
 3. リリースVersionを決定する。 先ほど確認したリリース内容からSemanticVersioningに従いVersionをincrementする。
 major: 目玉機能のリリース、破壊的変更を含むアップデート
 minor: 新機能の追加、大きな不具合の解消
@@ -25,6 +29,11 @@ patch: 軽微な不具合の解消
 8. release/<x.y.z> をdevelopブランチにマージするPRを作成する。タイトルは <x.y.z>: Release note/Version increment とすること
 9. developブランチをmainブランチにマージするPRを作成する。
 タイトルは Release Version <x.y.z> とすること
+10. 8で作ったPRをマージする。
+11. 9で作ったPRをマージする。
+12. mainブランチに <x.y.z>というリリースタグを打つ
+内容は2で取得したPRのタイトルとリンク一覧とする。
+(例:feat: Issue #4 - ゲーム進行状況の保存とタブ間同期機能 by @miyasic in #10)
 
 
 ## release-note.jsonの形式
