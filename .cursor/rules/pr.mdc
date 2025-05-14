@@ -13,4 +13,7 @@ alwaysApply: false
 - PRのタイトルについて
 prefixのルールは [.cursor/rules/prefix.mdc](mdc:.cursor/rules/prefix.mdc) を参照してください。
 
+- PRの本文について
+プルリクエストの本文は、リポジトリの [.github/PULL_REQUEST_TEMPLATE.md](mdc:.github/PULL_REQUEST_TEMPLATE.md) に定義されたテンプレートに従って作成してください。
+
 PRのタイトル、内容は特に指示がない限り、日本語で書いてください。
