@@ -31,9 +31,6 @@ patch: 軽微な不具合の解消
 タイトルは Release Version <x.y.z> とすること
 10. 8で作ったPRをマージする。
 11. 9で作ったPRをマージする。
-12. mainブランチに <x.y.z>というリリースタグを打つ
-内容は2で取得したPRのタイトルとリンク一覧とする。
-(例:feat: Issue #4 - ゲーム進行状況の保存とタブ間同期機能 by @miyasic in #10)
 
 
 ## release-note.jsonの形式
