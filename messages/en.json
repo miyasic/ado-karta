@@ -33,8 +33,13 @@
         "linkKartaList": "Karta List",
         "linkAboutThisSite": "About This Site",
         "linkReleaseNotes": "Release Notes",
-        "buttonResetGame": "Start Over",
-        "switchToJapanese": "Japanese (日本語)"
+        "buttonResetGame": "Restart Game",
+        "switchToJapanese": "Japanese (日本語)",
+        "settings": "Game Settings",
+        "settingsTitle": "Display Settings",
+        "settingsDescription": "Change settings related to Karta display and playback.",
+        "settingIntroMode": "Play from intro mode",
+        "settingFakeLastCard": "Fake out for last card"
     },
     "GlobalMetadata": {
         "siteTitle": "Ado Karuta",
