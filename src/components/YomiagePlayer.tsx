@@ -31,10 +31,12 @@ interface GameState {
 // フェイクカルタを挿入するヘルパー関数
 function _insertFakeKarta<T extends Karta>(
     initialArray: T[], // フェイク挿入前のシャッフル済み配列
-    numConsideredLateGame: number
+    numConsideredLateGame: number,
+    enableFakes: boolean // ★追加: フェイクを有効にするかのフラグ
 ): { arrayWithFakes: T[], fakesInsertedCount: number } {
     // カルタが3枚以下ならフェイク挿入処理を行わない
-    if (initialArray.length <= 3) {
+    // または enableFakes が false ならフェイク挿入処理を行わない
+    if (!enableFakes || initialArray.length <= 3) {
         return { arrayWithFakes: [...initialArray], fakesInsertedCount: 0 };
     }
 
@@ -71,7 +73,7 @@ function _insertFakeKarta<T extends Karta>(
     return { arrayWithFakes: resultWithFakes, fakesInsertedCount };
 }
 
-function shuffleArray<T extends Karta>(array: T[]): T[] {
+function shuffleArray<T extends Karta>(array: T[], enableFakes: boolean): T[] {
     let currentIndex = array.length, randomIndex;
     const newArray = [...array];
 
@@ -86,8 +88,7 @@ function shuffleArray<T extends Karta>(array: T[]): T[] {
     const initialArrayLength = newArray.length; // フェイク挿入前の配列長を保持
     const numToConsiderForFake = 3;
 
-    // _insertFakeKarta の引数を変更
-    const result = _insertFakeKarta(newArray, numToConsiderForFake);
+    const result = _insertFakeKarta(newArray, numToConsiderForFake, enableFakes);
     const finalArray = result.arrayWithFakes;
     const fakesCount = result.fakesInsertedCount;
 
@@ -112,8 +113,12 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const initializePlaylist = useCallback(() => {
         try {
+            // ローカルストレージからフェイクモード設定を読み込む
+            const fakeModeSettingString = typeof window !== 'undefined' ? localStorage.getItem('shuffleFakeModeEnabled') : null;
+            const enableFakes = fakeModeSettingString ? JSON.parse(fakeModeSettingString) : false; // デフォルトはfalse
+
             if (allKarta.length > 0) {
-                const shuffled = shuffleArray(allKarta);
+                const shuffled = shuffleArray(allKarta, enableFakes);
 
                 setShuffledPlaylist(shuffled);
                 setCurrentIndex(0);
