@@ -1,62 +1,88 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button'; // shadcn/ui の Button を使う
-import pkg from '../../package.json'; // package.json から version をインポート
-import { useTranslations, useLocale } from 'next-intl'; // useLocale を追加
-import { usePathname } from 'next/navigation'; // usePathname を追加
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import pkg from '../../package.json';
+import { useTranslations, useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
-    const t = useTranslations('Header'); // 追加
-    const locale = useLocale(); // 現在のロケールを取得
-    const pathname = usePathname(); // 現在のパスを取得
+    const t = useTranslations('Header');
+    const locale = useLocale();
+    const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // 設定モーダル用の state
+    const [isIntroMode, setIsIntroMode] = useState(false); // イントロモード用の state を追加
+    const [isShuffleFakeModeEnabled, setIsShuffleFakeModeEnabled] = useState(false); // フェイクモード用のstate
+
+    useEffect(() => {
+        // localStorageからイントロモードの設定を読み込む
+        const storedIntroMode = localStorage.getItem('introModeEnabled');
+        if (storedIntroMode) {
+            setIsIntroMode(JSON.parse(storedIntroMode));
+        }
+        const storedShuffleFakeMode = localStorage.getItem('shuffleFakeModeEnabled'); // ローカルストレージから読み込み
+        if (storedShuffleFakeMode) {
+            setIsShuffleFakeModeEnabled(JSON.parse(storedShuffleFakeMode));
+        }
+    }, []);
+
+    const handleIntroModeChange = (checked: boolean) => {
+        setIsIntroMode(checked);
+        localStorage.setItem('introModeEnabled', JSON.stringify(checked));
+    };
+
+    const handleShuffleFakeModeChange = (checked: boolean) => { // フェイクモード変更ハンドラ
+        setIsShuffleFakeModeEnabled(checked);
+        localStorage.setItem('shuffleFakeModeEnabled', JSON.stringify(checked));
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    // 言語切り替えのロジック
     const otherLocale = locale === 'ja' ? 'en' : 'ja';
     const linkText = locale === 'ja' ? t('switchToEnglish') : t('switchToJapanese');
 
-    // 現在のパスからロケールプレフィックスを除去したベースパスを取得
-    // 例: /ja/list -> /list, /en -> "", /ja -> ""
     const basePathWithoutLocale = pathname.replace(new RegExp(`^/${locale}`), '') || '';
-    // 切り替え後のhrefを生成。ベースパスが空（ルート）の場合はロケールのみ、それ以外はロケール＋ベースパス
     const languageSwitchHref = `/${otherLocale}${basePathWithoutLocale}`;
 
-    // 再生画面（ルートパス）かどうかを判定
     const isYomiagePage = pathname === `/${locale}` || pathname === '/';
 
     return (
-        <header className="p-4 relative"> {/* relative を追加してメニューの位置基準にする */}
+        <header className="p-4 relative">
             <div className="container mx-auto flex justify-between items-center">
-                {/* ロゴ */}
                 <Link href="/" className="inline-block">
                     <Image
                         src="/logo.png"
-                        alt={t('logoAlt')} // 修正
+                        alt={t('logoAlt')}
                         width={120}
                         height={80}
                         priority
                     />
                 </Link>
 
-                {/* メニューボタン */}
                 <Button variant="ghost" size="icon" onClick={toggleMenu}>
                     <Image
                         src="/menu.png"
-                        alt={t('menuOpenAlt')} // 修正
+                        alt={t('menuOpenAlt')}
                         width={60}
                         height={60}
                     />
                 </Button>
             </div>
 
-            {/* ドロップダウンメニュー (isMenuOpenがtrueの時に表示) */}
             {isMenuOpen && (
                 <div className="absolute top-full right-4 w-48 bg-muted border rounded-md shadow-lg z-50">
                     <ul className="py-1">
@@ -66,20 +92,31 @@ export function Header() {
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                {t('linkKartaList')} {/* 修正 */}
+                                {t('linkKartaList')}
                             </Link>
                         </li>
-                        {/* 「このサイトについて」を追加 */}
+                        {isYomiagePage && (
+                            <li>
+                                <button
+                                    className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
+                                    onClick={() => {
+                                        setIsDialogOpen(true);
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    {t('settings')}
+                                </button>
+                            </li>
+                        )}
                         <li>
                             <Link
-                                href={`/${locale}/about`} // 将来的に作成するページへのパス
+                                href={`/${locale}/about`}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                {t('linkAboutThisSite')} {/* 修正 */}
+                                {t('linkAboutThisSite')}
                             </Link>
                         </li>
-                        {/* リリースノートへのリンクを追加 */}
                         <li>
                             <Link
                                 href={`/${locale}/release-notes`}
@@ -89,31 +126,16 @@ export function Header() {
                                 {t('linkReleaseNotes')}
                             </Link>
                         </li>
-                        {isYomiagePage && ( // 再生画面でのみ表示
-                            <li>
-                                <button
-                                    className="w-full text-left block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
-                                    onClick={() => {
-                                        setIsMenuOpen(false);
-                                        window.dispatchEvent(new CustomEvent('resetYomiageGame'));
-                                    }}
-                                >
-                                    {t('buttonResetGame')} {/* 修正 */}
-                                </button>
-                            </li>
-                        )}
-                        {/* 言語切り替えボタンを追加 */}
                         <li>
                             <Link
                                 href={languageSwitchHref}
                                 className="block px-4 py-2 text-sm hover:bg-accent transition-colors duration-150"
                                 onClick={() => setIsMenuOpen(false)}
-                                locale={otherLocale} // next/link に target locale を伝える
+                                locale={otherLocale}
                             >
                                 {linkText}
                             </Link>
                         </li>
-                        {/* バージョン表示を追加 */}
                         <li>
                             <span className="block px-4 py-2 text-xs text-muted-foreground">
                                 Version: {pkg.version}
@@ -122,6 +144,53 @@ export function Header() {
                     </ul>
                 </div>
             )}
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-[425px] bg-muted">
+                    <DialogHeader>
+                        <DialogTitle>{t('settingsTitle')}</DialogTitle>
+                        <DialogDescription>
+                            {t('settingsDescription')}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="intro-mode"
+                                checked={isIntroMode}
+                                onCheckedChange={handleIntroModeChange}
+                            />
+                            <Label htmlFor="intro-mode">{t('settingIntroMode')}</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="shuffle-fake-mode"
+                                checked={isShuffleFakeModeEnabled}
+                                onCheckedChange={handleShuffleFakeModeChange}
+                            />
+                            <Label htmlFor="shuffle-fake-mode">{t('settingEnableShuffleFakeMode')}</Label>
+                        </div>
+                    </div>
+                    {isYomiagePage && (
+                        <div className="mt-4">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => {
+                                    window.dispatchEvent(new CustomEvent('resetYomiageGame'));
+                                    setIsDialogOpen(false);
+                                }}
+                            >
+                                {t('buttonResetGame')}
+                            </Button>
+                        </div>
+                    )}
+                    {/* DialogFooter は、将来的に「保存」ボタンなどを追加する場合のために残しておくことも可能 */}
+                    {/* <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                    </DialogFooter> */}
+                </DialogContent>
+            </Dialog>
         </header>
     );
 } 
