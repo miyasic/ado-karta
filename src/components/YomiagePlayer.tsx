@@ -9,6 +9,7 @@ interface Karta {
     title: string;
     youtubeId: string;
     startSeconds: number;
+    isFake?: boolean;
 }
 
 interface YomiagePlayerProps {
@@ -22,7 +23,50 @@ interface GameState {
     currentIndex: number;
 }
 
-function shuffleArray<T>(array: T[]): T[] {
+// フェイクカルタを挿入するヘルパー関数
+function _insertFakeKarta<T extends Karta>(
+    initialArray: T[], // フェイク挿入前のシャッフル済み配列
+    numConsideredLateGame: number
+): { arrayWithFakes: T[], fakesInsertedCount: number } {
+    // カルタが3枚以下ならフェイク挿入処理を行わない
+    if (initialArray.length <= 3) {
+        return { arrayWithFakes: [...initialArray], fakesInsertedCount: 0 };
+    }
+
+    let fakesInsertedCount = 0;
+    const resultWithFakes: T[] = [...initialArray]; // 初期状態は元の配列のコピー
+
+    // 元の配列における終盤の開始インデックスを計算
+    const lateGameStartIndexOriginal = Math.max(0, initialArray.length - numConsideredLateGame);
+
+    let currentIndex = 0;
+    while (currentIndex < resultWithFakes.length) {
+        // 現在処理している要素のインデックスが、元の配列基準の終盤開始インデックス以上であれば
+        // フェイクを挿入するチャンスがある
+        if (currentIndex >= lateGameStartIndexOriginal) {
+            if (Math.random() < 0.5) { // 50%の確率でフェイクを挿入
+                // フェイクの元ネタを、resultWithFakes の最初から「現在処理中の要素の一つ前」までの中からランダムに選ぶ
+                // currentIndex >= lateGameStartIndexOriginal であり、lateGameStartIndexOriginal >= 1 なので currentIndex は常に1以上。
+                const fakeSourceIndex = Math.floor(Math.random() * currentIndex);
+                const sourceKarta = resultWithFakes[fakeSourceIndex];
+
+                if (sourceKarta) {
+                    const fakeKarta = { ...sourceKarta, isFake: true } as T;
+
+                    // 現在処理している要素の直前にフェイクを挿入
+                    resultWithFakes.splice(currentIndex, 0, fakeKarta);
+                    fakesInsertedCount++;
+                    // フェイクを挿入した場合、次に処理する currentIndex はループの最後でインクリメントされるため、
+                    // 新しく挿入されたフェイクが次のイテレーションの対象になる。
+                }
+            }
+        }
+        currentIndex++;
+    }
+    return { arrayWithFakes: resultWithFakes, fakesInsertedCount };
+}
+
+function shuffleArray<T extends Karta>(array: T[]): T[] {
     let currentIndex = array.length, randomIndex;
     const newArray = [...array];
 
@@ -33,7 +77,21 @@ function shuffleArray<T>(array: T[]): T[] {
         [newArray[currentIndex], newArray[randomIndex]] = [
             newArray[randomIndex], newArray[currentIndex]];
     }
-    return newArray;
+
+    const initialArrayLength = newArray.length; // フェイク挿入前の配列長を保持
+    const numToConsiderForFake = 3;
+
+    // _insertFakeKarta の引数を変更
+    const result = _insertFakeKarta(newArray, numToConsiderForFake);
+    const finalArray = result.arrayWithFakes;
+    const fakesCount = result.fakesInsertedCount;
+
+    // フェイク挿入前のカルタが3枚より多かった場合のみログ出力（元の挙動を維持）
+    if (initialArrayLength > 3) {
+        console.log("Shuffled array with fakes:", finalArray);
+        console.log("Number of fakes inserted:", fakesCount);
+    }
+    return finalArray;
 }
 
 export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
