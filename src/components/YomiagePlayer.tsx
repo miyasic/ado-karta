@@ -18,8 +18,13 @@ interface YomiagePlayerProps {
 
 const GAME_STATE_STORAGE_KEY = 'yomiageGameState';
 
+interface KartaIdWithFakeFlag {
+    youtubeId: string;
+    isFake?: boolean;
+}
+
 interface GameState {
-    shuffledPlaylistYomiageIds: string[];
+    shuffledPlaylistItems: KartaIdWithFakeFlag[];
     currentIndex: number;
 }
 
@@ -109,12 +114,13 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         try {
             if (allKarta.length > 0) {
                 const shuffled = shuffleArray(allKarta);
+
                 setShuffledPlaylist(shuffled);
                 setCurrentIndex(0);
                 setShowPlayerPlaceholder(true);
                 setIsPlaying(false);
                 if (typeof window !== 'undefined') {
-                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistYomiageIds: shuffled.map(k => k.youtubeId), currentIndex: 0 }));
+                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistItems: shuffled.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake })), currentIndex: 0 }));
                 }
             } else {
                 setShuffledPlaylist([]);
@@ -148,8 +154,12 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             if (savedStateString) {
                 try {
                     const savedState: GameState = JSON.parse(savedStateString);
-                    const restoredPlaylist = savedState.shuffledPlaylistYomiageIds.map(youtubeId => {
-                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    const restoredPlaylist = savedState.shuffledPlaylistItems.map(item => {
+                        const kartaFromMaster = allKarta.find(k => k.youtubeId === item.youtubeId);
+                        if (kartaFromMaster) {
+                            return { ...kartaFromMaster, isFake: item.isFake };
+                        }
+                        return undefined;
                     }).filter(karta => karta !== undefined) as Karta[];
 
                     if (restoredPlaylist.length > 0 && savedState.currentIndex >= 0 && savedState.currentIndex < restoredPlaylist.length) {
@@ -177,7 +187,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     useEffect(() => {
         if (typeof window !== 'undefined' && shuffledPlaylist.length > 0 && currentIndex >= 0) {
-            const currentGameState: GameState = { shuffledPlaylistYomiageIds: shuffledPlaylist.map(k => k.youtubeId), currentIndex };
+            const currentGameState: GameState = { shuffledPlaylistItems: shuffledPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake })), currentIndex };
             localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(currentGameState));
         }
     }, [currentIndex, shuffledPlaylist]);
@@ -192,12 +202,16 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             if (event.key === GAME_STATE_STORAGE_KEY && event.newValue) {
                 try {
                     const newState: GameState = JSON.parse(event.newValue);
-                    const newPlaylist = newState.shuffledPlaylistYomiageIds.map(youtubeId => {
-                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    const newPlaylist = newState.shuffledPlaylistItems.map(item => {
+                        const kartaFromMaster = allKarta.find(k => k.youtubeId === item.youtubeId);
+                        if (kartaFromMaster) {
+                            return { ...kartaFromMaster, isFake: item.isFake };
+                        }
+                        return undefined;
                     }).filter(karta => karta !== undefined) as Karta[];
 
                     // 現在のステートと比較し、変更がある場合のみ更新
-                    if (JSON.stringify(newPlaylist.map(k => k.youtubeId)) !== JSON.stringify(shuffledPlaylist.map(k => k.youtubeId)) || newState.currentIndex !== currentIndex) {
+                    if (JSON.stringify(newPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake }))) !== JSON.stringify(shuffledPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake }))) || newState.currentIndex !== currentIndex) {
                         setShuffledPlaylist(newPlaylist);
                         setCurrentIndex(newState.currentIndex);
                         // 他のタブで操作された可能性があるので、再生状態をリセット
@@ -266,9 +280,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         }
     };
 
-    const totalCount = shuffledPlaylist.length;
-    const isFinished = currentIndex >= totalCount - 1;
-    const readCount = currentIndex + 1;
+    const totalCount = shuffledPlaylist.filter(karta => !karta.isFake).length;
+    const isFinished = currentIndex >= shuffledPlaylist.length - 1;
+    const readCount = shuffledPlaylist.slice(0, currentIndex + 1).filter(karta => !karta.isFake).length;
 
     const opts: YouTubeProps['opts'] = {
         height: '100%',
