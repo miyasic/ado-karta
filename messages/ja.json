@@ -33,8 +33,13 @@
         "linkKartaList": "カルタ一覧",
         "linkAboutThisSite": "このサイトについて",
         "linkReleaseNotes": "リリースノート",
-        "buttonResetGame": "最初からやり直す",
-        "switchToEnglish": "English"
+        "buttonResetGame": "ゲームをはじめからにする",
+        "switchToEnglish": "English",
+        "settings": "ゲーム設定",
+        "settingsTitle": "表示設定",
+        "settingsDescription": "カルタの表示や再生に関する設定を変更します。",
+        "settingIntroMode": "イントロから再生モード",
+        "settingFakeLastCard": "最後の札のフェイク演出"
     },
     "GlobalMetadata": {
         "siteTitle": "Ado かるた",
