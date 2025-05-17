@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,20 @@ export function Header() {
     const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false); // 設定モーダル用の state
+    const [isIntroMode, setIsIntroMode] = useState(false); // イントロモード用の state を追加
+
+    useEffect(() => {
+        // localStorageからイントロモードの設定を読み込む
+        const storedIntroMode = localStorage.getItem('introModeEnabled');
+        if (storedIntroMode) {
+            setIsIntroMode(JSON.parse(storedIntroMode));
+        }
+    }, []);
+
+    const handleIntroModeChange = (checked: boolean) => {
+        setIsIntroMode(checked);
+        localStorage.setItem('introModeEnabled', JSON.stringify(checked));
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -131,7 +145,11 @@ export function Header() {
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="flex items-center space-x-2">
-                            <Switch id="intro-mode" />
+                            <Switch
+                                id="intro-mode"
+                                checked={isIntroMode}
+                                onCheckedChange={handleIntroModeChange}
+                            />
                             <Label htmlFor="intro-mode">{t('settingIntroMode')}</Label>
                         </div>
                         <div className="flex items-center space-x-2">

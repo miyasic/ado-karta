@@ -167,9 +167,16 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const loadAndPlayVideo = (karta: Karta) => {
         const player = playerRef.current;
         if (player && karta) {
+            let startSeconds = karta.startSeconds;
+            if (typeof window !== 'undefined') {
+                const introModeEnabled = localStorage.getItem('introModeEnabled');
+                if (introModeEnabled && JSON.parse(introModeEnabled)) {
+                    startSeconds = 0; // イントロモードが有効なら再生開始時間を0に
+                }
+            }
             player.loadVideoById({
                 videoId: karta.youtubeId,
-                startSeconds: karta.startSeconds
+                startSeconds: startSeconds
             });
         } else {
             console.error('Player instance not available or karta is null.');
