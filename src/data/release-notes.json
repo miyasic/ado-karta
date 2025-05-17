@@ -1,134 +1,72 @@
 [
     {
-        "version": "1.1.2",
-        "releaseDate": "2025/05/15",
-        "changes": {
-            "ja": {
-                "newFeatures": [],
-                "bugFixes": [],
-                "improvements": [
-                    {
-                        "title": "再生画面でのみ「最初からやり直す」ボタンを表示するようにしました。"
-                    }
-                ]
+        "version": "1.2.0",
+        "date": "2025-05-17",
+        "notes": [
+            {
+                "type": "improvements",
+                "description": "終盤の読み上げにフェイクカルタを混ぜる機能を追加 (#7)"
             },
-            "en": {
-                "newFeatures": [],
-                "bugFixes": [],
-                "improvements": [
-                    {
-                        "title": "The \"Restart from Beginning\" button is now displayed only on the playback screen."
-                    }
-                ]
+            {
+                "type": "feat",
+                "description": "イントロから再生するオプション機能を追加 (#3)"
+            },
+            {
+                "type": "improvements",
+                "description": "ヘッダーにゲーム設定モーダルを追加"
             }
-        }
+        ]
+    },
+    {
+        "version": "1.1.2",
+        "date": "2025-05-14",
+        "notes": [
+            {
+                "type": "improvements",
+                "description": "リリース手順にgit tagの操作を追記 (#28)"
+            },
+            {
+                "type": "docs",
+                "description": "リリース手順を更新"
+            }
+        ]
     },
     {
         "version": "1.1.1",
-        "releaseDate": "2025/05/11",
-        "changes": {
-            "ja": {
-                "newFeatures": [],
-                "bugFixes": [
-                    {
-                        "title": "表示言語に関する不具合を修正しました。"
-                    }
-                ],
-                "improvements": []
-            },
-            "en": {
-                "newFeatures": [],
-                "bugFixes": [
-                    {
-                        "title": "Fixed a bug related to display language."
-                    }
-                ],
-                "improvements": []
+        "date": "2025-05-11",
+        "notes": [
+            {
+                "type": "fix",
+                "description": "表示言語に関する不具合を修正しました。"
             }
-        }
+        ]
     },
     {
         "version": "1.1.0",
-        "releaseDate": "2025/05/11",
-        "changes": {
-            "ja": {
-                "newFeatures": [
-                    {
-                        "title": "リリースノートが読めるようになりました！",
-                        "descriptions": [
-                            "これまでのアップデートで何が変わったのか、一覧で確認できるようになりました。"
-                        ]
-                    },
-                    {
-                        "title": "英語表示に対応しました！",
-                        "descriptions": [
-                            "サイトの表示を日本語と英語で切り替えられるようになりました。画面右上のメニューから変更できます。"
-                        ]
-                    },
-                    {
-                        "title": "ゲームがもっと遊びやすくなりました！",
-                        "descriptions": [
-                            "遊んでいる途中でブラウザを閉じたり、更新したりしても、続きから遊べるようになりました。",
-                            "複数の画面（タブ）で同時に開いていても、ゲームの状況が一緒に変わるようになりました。",
-                            "「最初からやり直す」ボタンを画面右上のメニューに追加しました。いつでも最初の状態に戻して遊べます。"
-                        ]
-                    }
-                ],
-                "bugFixes": [],
-                "improvements": []
+        "date": "2025-05-11",
+        "notes": [
+            {
+                "type": "feat",
+                "description": "リリースノートが読めるようになりました！これまでのアップデートで何が変わったのか、一覧で確認できるようになりました。"
             },
-            "en": {
-                "newFeatures": [
-                    {
-                        "title": "Release notes are now available!",
-                        "descriptions": [
-                            "You can now see a list of what has changed in previous updates."
-                        ]
-                    },
-                    {
-                        "title": "English display is now supported!",
-                        "descriptions": [
-                            "You can now switch the site display between Japanese and English. You can change it from the menu in the upper right corner of the screen."
-                        ]
-                    },
-                    {
-                        "title": "The game is now even easier to play!",
-                        "descriptions": [
-                            "Even if you close or refresh your browser while playing, you can now resume from where you left off.",
-                            "Even if you have the game open in multiple screens (tabs) at the same time, the game status will now change together.",
-                            "A '''Restart from Beginning''' button has been added to the menu in the upper right corner of the screen. You can return to the initial state and play at any time."
-                        ]
-                    }
-                ],
-                "bugFixes": [],
-                "improvements": []
+            {
+                "type": "feat",
+                "description": "英語表示に対応しました！サイトの表示を日本語と英語で切り替えられるようになりました。画面右上のメニューから変更できます。"
+            },
+            {
+                "type": "feat",
+                "description": "ゲームがもっと遊びやすくなりました！遊んでいる途中でブラウザを閉じたり、更新したりしても、続きから遊べるようになりました。複数の画面（タブ）で同時に開いていても、ゲームの状況が一緒に変わるようになりました。「最初からやり直す」ボタンを画面右上のメニューに追加しました。いつでも最初の状態に戻して遊べます。"
             }
-        }
+        ]
     },
     {
         "version": "1.0.0",
-        "releaseDate": "2025/05/06",
-        "changes": {
-            "ja": {
-                "newFeatures": [
-                    {
-                        "title": "「Adoかるた」サイトへようこそ！",
-                        "descriptions": [
-                            "このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
-                        ]
-                    }
-                ]
-            },
-            "en": {
-                "newFeatures": [
-                    {
-                        "title": "Welcome to the \"Ado Karuta\" site!",
-                        "descriptions": [
-                            "Here you can enjoy having Ado's song karuta read aloud and viewing a list of the karuta cards."
-                        ]
-                    }
-                ]
+        "date": "2025-05-06",
+        "notes": [
+            {
+                "type": "feat",
+                "description": "「Adoかるた」サイトへようこそ！このサイトでは、Adoさんの楽曲カルタの読み上げや、カルタの一覧表示を楽しむことができます。"
             }
-        }
+        ]
     }
 ]
