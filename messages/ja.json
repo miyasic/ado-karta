@@ -39,7 +39,7 @@
         "settingsTitle": "表示設定",
         "settingsDescription": "カルタの表示や再生に関する設定を変更します。",
         "settingIntroMode": "イントロから再生モード",
-        "settingFakeLastCard": "最後の札のフェイク演出"
+        "settingEnableShuffleFakeMode": "終盤に再生済みの読み札も含める"
     },
     "GlobalMetadata": {
         "siteTitle": "Ado かるた",

@@ -39,7 +39,7 @@
         "settingsTitle": "Display Settings",
         "settingsDescription": "Change settings related to Karta display and playback.",
         "settingIntroMode": "Play from intro mode",
-        "settingFakeLastCard": "Fake out for last card"
+        "settingEnableShuffleFakeMode": "Include already played songs when few cards remain (Shuffle Fake Mode)"
     },
     "GlobalMetadata": {
         "siteTitle": "Ado Karuta",

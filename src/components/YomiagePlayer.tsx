@@ -9,6 +9,7 @@ interface Karta {
     title: string;
     youtubeId: string;
     startSeconds: number;
+    isFake?: boolean;
 }
 
 interface YomiagePlayerProps {
@@ -17,12 +18,62 @@ interface YomiagePlayerProps {
 
 const GAME_STATE_STORAGE_KEY = 'yomiageGameState';
 
+interface KartaIdWithFakeFlag {
+    youtubeId: string;
+    isFake?: boolean;
+}
+
 interface GameState {
-    shuffledPlaylistYomiageIds: string[];
+    shuffledPlaylistItems: KartaIdWithFakeFlag[];
     currentIndex: number;
 }
 
-function shuffleArray<T>(array: T[]): T[] {
+// フェイクカルタを挿入するヘルパー関数
+function _insertFakeKarta<T extends Karta>(
+    initialArray: T[], // フェイク挿入前のシャッフル済み配列
+    numConsideredLateGame: number,
+    enableFakes: boolean // ★追加: フェイクを有効にするかのフラグ
+): { arrayWithFakes: T[], fakesInsertedCount: number } {
+    // カルタが3枚以下ならフェイク挿入処理を行わない
+    // または enableFakes が false ならフェイク挿入処理を行わない
+    if (!enableFakes || initialArray.length <= 3) {
+        return { arrayWithFakes: [...initialArray], fakesInsertedCount: 0 };
+    }
+
+    let fakesInsertedCount = 0;
+    const resultWithFakes: T[] = [...initialArray]; // 初期状態は元の配列のコピー
+
+    // 元の配列における終盤の開始インデックスを計算
+    const lateGameStartIndexOriginal = Math.max(0, initialArray.length - numConsideredLateGame);
+
+    let currentIndex = 0;
+    while (currentIndex < resultWithFakes.length) {
+        // 現在処理している要素のインデックスが、元の配列基準の終盤開始インデックス以上であれば
+        // フェイクを挿入するチャンスがある
+        if (currentIndex >= lateGameStartIndexOriginal) {
+            if (Math.random() < 0.5) { // 50%の確率でフェイクを挿入
+                // フェイクの元ネタを、resultWithFakes の最初から「現在処理中の要素の一つ前」までの中からランダムに選ぶ
+                // currentIndex >= lateGameStartIndexOriginal であり、lateGameStartIndexOriginal >= 1 なので currentIndex は常に1以上。
+                const fakeSourceIndex = Math.floor(Math.random() * currentIndex);
+                const sourceKarta = resultWithFakes[fakeSourceIndex];
+
+                if (sourceKarta) {
+                    const fakeKarta = { ...sourceKarta, isFake: true } as T;
+
+                    // 現在処理している要素の直前にフェイクを挿入
+                    resultWithFakes.splice(currentIndex, 0, fakeKarta);
+                    fakesInsertedCount++;
+                    // フェイクを挿入した場合、次に処理する currentIndex はループの最後でインクリメントされるため、
+                    // 新しく挿入されたフェイクが次のイテレーションの対象になる。
+                }
+            }
+        }
+        currentIndex++;
+    }
+    return { arrayWithFakes: resultWithFakes, fakesInsertedCount };
+}
+
+function shuffleArray<T extends Karta>(array: T[], enableFakes: boolean): T[] {
     let currentIndex = array.length, randomIndex;
     const newArray = [...array];
 
@@ -33,7 +84,20 @@ function shuffleArray<T>(array: T[]): T[] {
         [newArray[currentIndex], newArray[randomIndex]] = [
             newArray[randomIndex], newArray[currentIndex]];
     }
-    return newArray;
+
+    const initialArrayLength = newArray.length; // フェイク挿入前の配列長を保持
+    const numToConsiderForFake = 3;
+
+    const result = _insertFakeKarta(newArray, numToConsiderForFake, enableFakes);
+    const finalArray = result.arrayWithFakes;
+    const fakesCount = result.fakesInsertedCount;
+
+    // フェイク挿入前のカルタが3枚より多かった場合のみログ出力（元の挙動を維持）
+    if (initialArrayLength > 3) {
+        console.log("Shuffled array with fakes:", finalArray);
+        console.log("Number of fakes inserted:", fakesCount);
+    }
+    return finalArray;
 }
 
 export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
@@ -49,14 +113,19 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const initializePlaylist = useCallback(() => {
         try {
+            // ローカルストレージからフェイクモード設定を読み込む
+            const fakeModeSettingString = typeof window !== 'undefined' ? localStorage.getItem('shuffleFakeModeEnabled') : null;
+            const enableFakes = fakeModeSettingString ? JSON.parse(fakeModeSettingString) : false; // デフォルトはfalse
+
             if (allKarta.length > 0) {
-                const shuffled = shuffleArray(allKarta);
+                const shuffled = shuffleArray(allKarta, enableFakes);
+
                 setShuffledPlaylist(shuffled);
                 setCurrentIndex(0);
                 setShowPlayerPlaceholder(true);
                 setIsPlaying(false);
                 if (typeof window !== 'undefined') {
-                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistYomiageIds: shuffled.map(k => k.youtubeId), currentIndex: 0 }));
+                    localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify({ shuffledPlaylistItems: shuffled.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake })), currentIndex: 0 }));
                 }
             } else {
                 setShuffledPlaylist([]);
@@ -90,8 +159,12 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             if (savedStateString) {
                 try {
                     const savedState: GameState = JSON.parse(savedStateString);
-                    const restoredPlaylist = savedState.shuffledPlaylistYomiageIds.map(youtubeId => {
-                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    const restoredPlaylist = savedState.shuffledPlaylistItems.map(item => {
+                        const kartaFromMaster = allKarta.find(k => k.youtubeId === item.youtubeId);
+                        if (kartaFromMaster) {
+                            return { ...kartaFromMaster, isFake: item.isFake };
+                        }
+                        return undefined;
                     }).filter(karta => karta !== undefined) as Karta[];
 
                     if (restoredPlaylist.length > 0 && savedState.currentIndex >= 0 && savedState.currentIndex < restoredPlaylist.length) {
@@ -119,7 +192,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     useEffect(() => {
         if (typeof window !== 'undefined' && shuffledPlaylist.length > 0 && currentIndex >= 0) {
-            const currentGameState: GameState = { shuffledPlaylistYomiageIds: shuffledPlaylist.map(k => k.youtubeId), currentIndex };
+            const currentGameState: GameState = { shuffledPlaylistItems: shuffledPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake })), currentIndex };
             localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(currentGameState));
         }
     }, [currentIndex, shuffledPlaylist]);
@@ -134,12 +207,16 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
             if (event.key === GAME_STATE_STORAGE_KEY && event.newValue) {
                 try {
                     const newState: GameState = JSON.parse(event.newValue);
-                    const newPlaylist = newState.shuffledPlaylistYomiageIds.map(youtubeId => {
-                        return allKarta.find(k => k.youtubeId === youtubeId);
+                    const newPlaylist = newState.shuffledPlaylistItems.map(item => {
+                        const kartaFromMaster = allKarta.find(k => k.youtubeId === item.youtubeId);
+                        if (kartaFromMaster) {
+                            return { ...kartaFromMaster, isFake: item.isFake };
+                        }
+                        return undefined;
                     }).filter(karta => karta !== undefined) as Karta[];
 
                     // 現在のステートと比較し、変更がある場合のみ更新
-                    if (JSON.stringify(newPlaylist.map(k => k.youtubeId)) !== JSON.stringify(shuffledPlaylist.map(k => k.youtubeId)) || newState.currentIndex !== currentIndex) {
+                    if (JSON.stringify(newPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake }))) !== JSON.stringify(shuffledPlaylist.map(k => ({ youtubeId: k.youtubeId, isFake: k.isFake }))) || newState.currentIndex !== currentIndex) {
                         setShuffledPlaylist(newPlaylist);
                         setCurrentIndex(newState.currentIndex);
                         // 他のタブで操作された可能性があるので、再生状態をリセット
@@ -208,9 +285,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
         }
     };
 
-    const totalCount = shuffledPlaylist.length;
-    const isFinished = currentIndex >= totalCount - 1;
-    const readCount = currentIndex + 1;
+    const totalCount = shuffledPlaylist.filter(karta => !karta.isFake).length;
+    const isFinished = currentIndex >= shuffledPlaylist.length - 1;
+    const readCount = shuffledPlaylist.slice(0, currentIndex + 1).filter(karta => !karta.isFake).length;
 
     const opts: YouTubeProps['opts'] = {
         height: '100%',
