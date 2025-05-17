@@ -1,5 +1,43 @@
 [
     {
+        "version": "1.2.0",
+        "releaseDate": "2025/05/17",
+        "changes": {
+            "ja": {
+                "newFeatures": [
+                    {
+                        "title": "イントロから再生するオプション機能を追加しました。"
+                    }
+                ],
+                "improvements": [
+                    {
+                        "title": "終盤の読み上げにフェイクカルタを混ぜる機能を追加しました。"
+                    },
+                    {
+                        "title": "ヘッダーにゲーム設定モーダルを追加しました。"
+                    }
+                ],
+                "bugFixes": []
+            },
+            "en": {
+                "newFeatures": [
+                    {
+                        "title": "Added an option to play from the intro."
+                    }
+                ],
+                "improvements": [
+                    {
+                        "title": "Added a feature to mix in fake karuta cards during the latter half of the reading."
+                    },
+                    {
+                        "title": "Added a game settings modal to the header."
+                    }
+                ],
+                "bugFixes": []
+            }
+        }
+    },
+    {
         "version": "1.1.2",
         "releaseDate": "2025/05/15",
         "changes": {
