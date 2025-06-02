@@ -108,6 +108,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const [showPlayerPlaceholder, setShowPlayerPlaceholder] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isVideoReady, setIsVideoReady] = useState<boolean>(false);
 
     const playerRef = useRef<YouTubePlayer | null>(null);
 
@@ -263,6 +264,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const handleNextCard = () => {
         if (currentIndex < shuffledPlaylist.length - 1) {
             setIsPlaying(false);
+            setIsVideoReady(false);
             playerRef.current?.stopVideo();
             setCurrentIndex(prevIndex => prevIndex + 1);
             setShowPlayerPlaceholder(true);
@@ -272,6 +274,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     const handlePreviousCard = () => {
         if (currentIndex > 0) {
             setIsPlaying(false);
+            setIsVideoReady(false);
             playerRef.current?.stopVideo();
             setCurrentIndex(prevIndex => prevIndex - 1);
             setShowPlayerPlaceholder(true);
@@ -279,7 +282,7 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
     };
 
     const handlePlayClick = () => {
-        if (currentKarta) {
+        if (currentKarta && isVideoReady) {
             setShowPlayerPlaceholder(false);
             loadAndPlayVideo(currentKarta);
         }
@@ -302,6 +305,8 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
 
     const onReady = (event: { target: YouTubePlayer }) => {
         playerRef.current = event.target;
+        // 動画の準備が完了したらisVideoReadyをtrueに設定
+        setIsVideoReady(true);
     };
 
     const onStateChange: YouTubeProps['onStateChange'] = (event) => {
@@ -327,7 +332,10 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                     opts={opts}
                     onReady={onReady}
                     onStateChange={onStateChange}
-                    onError={(e) => console.error("Player Error:", e)}
+                    onError={(e) => {
+                        console.error("Player Error:", e);
+                        setIsVideoReady(false);
+                    }}
                     className="absolute top-0 left-0 w-full h-full"
                     style={{ visibility: (!isLoading && currentKarta && !showPlayerPlaceholder) ? 'visible' : 'hidden' }}
                 />
@@ -336,8 +344,9 @@ export function YomiagePlayer({ initialKartaData }: YomiagePlayerProps) {
                         variant="ghost"
                         size="icon"
                         onClick={handlePlayClick}
-                        className="w-20 h-20 text-gray-400 hover:text-white transition-colors duration-200 z-10"
+                        className={`w-20 h-20 transition-colors duration-200 z-10 ${isVideoReady ? 'text-blue-500 hover:text-blue-600' : 'text-gray-400 cursor-not-allowed'}`}
                         aria-label={t('playButtonAriaLabel')}
+                        disabled={!isVideoReady}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
                             <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
