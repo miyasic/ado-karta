@@ -168,5 +168,35 @@
                 ]
             }
         }
+    },
+    {
+        "version": "1.2.1",
+        "releaseDate": "2025/06/03",
+        "changes": {
+            "ja": {
+                "newFeatures": [],
+                "improvements": [
+                    {
+                        "title": "動画の読み込み状態に応じた再生ボタンの表示制御を実装しました。",
+                        "descriptions": [
+                            "動画が準備できるまでは再生ボタンをグレーアウトし、準備完了後は青色のボタンに変更することで、操作可能なタイミングを視覚的に分かりやすくしました。"
+                        ]
+                    }
+                ],
+                "bugFixes": []
+            },
+            "en": {
+                "newFeatures": [],
+                "improvements": [
+                    {
+                        "title": "Implemented display control for the play button based on video loading status.",
+                        "descriptions": [
+                            "The play button is now grayed out until the video is ready, and then changes to blue when ready, making it visually clear when it can be operated."
+                        ]
+                    }
+                ],
+                "bugFixes": []
+            }
+        }
     }
 ]
