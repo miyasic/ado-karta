@@ -103,8 +103,8 @@ export function Header() {
                     <Image
                         src={menuImageSrc}
                         alt={t('menuOpenAlt')}
-                        width={60}
-                        height={60}
+                        width={isMobile ? 60 : 90}
+                        height={isMobile ? 60 : 90}
                     />
                 </Button>
             </div>
