@@ -1,5 +1,37 @@
 [
     {
+        "version": "1.3.0",
+        "releaseDate": "2025/06/04",
+        "changes": {
+            "ja": {
+                "newFeatures": [
+                    {
+                        "title": "メニューボタンにホバーアニメーションを追加しました。",
+                        "descriptions": [
+                            "PCではメニューボタンにマウスを乗せるとアニメーションが再生されるようになりました。",
+                            "モバイルデバイスでは常に最終フレームを表示するように改善しました。"
+                        ]
+                    }
+                ],
+                "improvements": [],
+                "bugFixes": []
+            },
+            "en": {
+                "newFeatures": [
+                    {
+                        "title": "Added hover animation to the menu button.",
+                        "descriptions": [
+                            "On PC, an animation now plays when you hover your mouse over the menu button.",
+                            "On mobile devices, the final frame is always displayed for improved visibility."
+                        ]
+                    }
+                ],
+                "improvements": [],
+                "bugFixes": []
+            }
+        }
+    },
+    {
         "version": "1.2.0",
         "releaseDate": "2025/05/17",
         "changes": {

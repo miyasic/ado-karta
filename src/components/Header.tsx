@@ -25,6 +25,7 @@ export function Header() {
     const [isDialogOpen, setIsDialogOpen] = useState(false); // 設定モーダル用の state
     const [isIntroMode, setIsIntroMode] = useState(false); // イントロモード用の state を追加
     const [isShuffleFakeModeEnabled, setIsShuffleFakeModeEnabled] = useState(false); // フェイクモード用のstate
+    const [isMobile, setIsMobile] = useState(false); // モバイル判定用のstate
 
     useEffect(() => {
         // localStorageからイントロモードの設定を読み込む
@@ -36,6 +37,21 @@ export function Header() {
         if (storedShuffleFakeMode) {
             setIsShuffleFakeModeEnabled(JSON.parse(storedShuffleFakeMode));
         }
+
+        // モバイル判定
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        // 初回レンダリング時にチェック
+        checkIfMobile();
+
+        // リサイズイベントでもチェック
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkIfMobile);
+        };
     }, []);
 
     const handleIntroModeChange = (checked: boolean) => {
@@ -60,6 +76,11 @@ export function Header() {
 
     const isYomiagePage = pathname === `/${locale}` || pathname === '/';
 
+    // メニューボタン用のアニメーション画像の選択
+    const menuImageSrc = isMobile
+        ? "/menu5.png"  // モバイルでは最終フレーム（5枚目）を表示
+        : "/menu1.png"; // PCでは1枚目を表示
+
     return (
         <header className="p-4 relative">
             <div className="container mx-auto flex justify-between items-center">
@@ -73,15 +94,43 @@ export function Header() {
                     />
                 </Link>
 
-                <Button variant="ghost" size="icon" onClick={toggleMenu}>
-                    <Image
-                        src="/menu.png"
-                        alt={t('menuOpenAlt')}
-                        width={60}
-                        height={60}
-                    />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleMenu}
+                    className={`menu-button ${isMobile ? "" : "hover-animation"}`}
+                >
+                    <div style={{ transform: isMobile ? 'scale(1)' : 'scale(1.2)' }}>
+                        <Image
+                            src={menuImageSrc}
+                            alt={t('menuOpenAlt')}
+                            width={60}
+                            height={60}
+                        />
+                    </div>
                 </Button>
             </div>
+
+            {/* CSS for menu button hover animation */}
+            <style jsx global>{`
+                @keyframes menuAnimation {
+                    0% { content: url('/menu1.png'); }
+                    25% { content: url('/menu2.png'); }
+                    50% { content: url('/menu3.png'); }
+                    75% { content: url('/menu4.png'); }
+                    100% { content: url('/menu5.png'); }
+                }
+                
+                .menu-button.hover-animation:hover img {
+                    animation: menuAnimation 0.5s steps(1) forwards;
+                }
+                
+                .menu-button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            `}</style>
 
             {isMenuOpen && (
                 <div className="absolute top-full right-4 w-48 bg-muted border rounded-md shadow-lg z-50">
@@ -185,10 +234,6 @@ export function Header() {
                             </Button>
                         </div>
                     )}
-                    {/* DialogFooter は、将来的に「保存」ボタンなどを追加する場合のために残しておくことも可能 */}
-                    {/* <DialogFooter>
-                        <Button type="submit">Save changes</Button>
-                    </DialogFooter> */}
                 </DialogContent>
             </Dialog>
         </header>
