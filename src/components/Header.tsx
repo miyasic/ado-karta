@@ -100,12 +100,14 @@ export function Header() {
                     onClick={toggleMenu}
                     className={`menu-button ${isMobile ? "" : "hover-animation"}`}
                 >
-                    <Image
-                        src={menuImageSrc}
-                        alt={t('menuOpenAlt')}
-                        width={isMobile ? 60 : 90}
-                        height={isMobile ? 60 : 90}
-                    />
+                    <div style={{ transform: isMobile ? 'scale(1)' : 'scale(1.2)' }}>
+                        <Image
+                            src={menuImageSrc}
+                            alt={t('menuOpenAlt')}
+                            width={60}
+                            height={60}
+                        />
+                    </div>
                 </Button>
             </div>
 
@@ -121,6 +123,12 @@ export function Header() {
                 
                 .menu-button.hover-animation:hover img {
                     animation: menuAnimation 0.5s steps(1) forwards;
+                }
+                
+                .menu-button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
             `}</style>
 
